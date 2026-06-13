@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tables - MesaFácil</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline": "#8e7164",
+                    "background": "#f9f9f9",
+                    "surface-variant": "#e2e2e2",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface-variant": "#5a4136",
+                    "on-secondary-fixed": "#1c1b1b",
+                    "primary-fixed": "#ffdbcc",
+                    "surface-container-highest": "#e2e2e2",
+                    "inverse-primary": "#ffb693",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed": "#351000",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed": "#e5e2e1",
+                    "outline-variant": "#e2bfb0",
+                    "on-secondary-fixed-variant": "#474746",
+                    "error": "#ba1a1a",
+                    "secondary-container": "#e2dfde",
+                    "on-background": "#1a1c1c",
+                    "inverse-on-surface": "#f1f1f1",
+                    "surface-container-high": "#e8e8e8",
+                    "on-surface": "#1a1c1c",
+                    "secondary-fixed-dim": "#c8c6c5",
+                    "surface-dim": "#dadada",
+                    "surface": "#f9f9f9",
+                    "primary": "#a04100",
+                    "on-tertiary-container": "#581f00",
+                    "error-container": "#ffdad6",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#7a3000",
+                    "on-tertiary-fixed": "#360f00",
+                    "tertiary-fixed-dim": "#ffb595",
+                    "tertiary": "#a23f00",
+                    "surface-container-low": "#f3f3f3",
+                    "surface-bright": "#f9f9f9",
+                    "tertiary-fixed": "#ffdbcd",
+                    "on-tertiary-fixed-variant": "#7c2e00",
+                    "inverse-surface": "#2f3131",
+                    "tertiary-container": "#fd6c19",
+                    "surface-tint": "#a04100",
+                    "on-secondary-container": "#636262",
+                    "on-primary-container": "#572000",
+                    "secondary": "#5f5e5e",
+                    "primary-container": "#ff6b00",
+                    "surface-container": "#eeeeee",
+                    "primary-fixed-dim": "#ffb693",
+                    "on-primary": "#ffffff",
+                    "on-error": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "touch-target-min": "48px",
+                    "md": "16px",
+                    "lg": "24px",
+                    "base": "8px",
+                    "xs": "4px",
+                    "sm": "12px",
+                    "xl": "32px",
+                    "container-padding": "20px"
+            },
+            "fontFamily": {
+                    "h3": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ],
+                    "body-lg": [
+                            "Inter"
+                    ],
+                    "h1": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "button": [
+                            "Inter"
+                    ],
+                    "h2": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "label-caps": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "h3": [
+                            "20px",
+                            {
+                                    "lineHeight": "1.4",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.5",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "h1": [
+                            "32px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "button": [
+                            "16px",
+                            {
+                                    "lineHeight": "1",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "h2": [
+                            "24px",
+                            {
+                                    "lineHeight": "1.3",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "1",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "700"
+                            }
+                    ]
+            }
+        },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex">
+<!-- SideNavBar (Hidden on Mobile, Visible on md+) -->
+<nav class="hidden md:flex fixed left-0 top-0 h-screen w-64 border-r border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-sm flex-col p-4 z-50 font-['Plus_Jakarta_Sans'] text-sm antialiased">
+<div class="mb-8 px-4 flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-lg overflow-hidden">
+<img alt="Admin User Avatar" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpFvztKwMA_WM1EbXEbGHy7hJDSWSXdiHHsmpO0sGbBQezr14C6-Gk5GYnkCWmjZpqY2gjgSZh8vaHwtVz-vtjs9Bd12GfDDpL77mZVtVxzYWt4Wfv3NeWYJVXVGOsVUBZsDuPnUtPMIbsrx1MUJ7ajx2lYc3bOWqTcHlYDjatC9A0bBjfEm-Hef8jK8RsDKirICQDZKN93HvRDuZmOx80Oo56S7gM3vFdH7OVsmPxSherPhUY17uPu7sN5dlAuEJdAED9gK6o_C0"/>
+</div>
+<div>
+<h1 class="text-2xl font-extrabold tracking-tighter text-orange-600 dark:text-orange-500">MesaFácil</h1>
+<p class="text-zinc-500 dark:text-zinc-400 text-xs">Restaurant Admin</p>
+</div>
+</div>
+<div class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-500 dark:text-zinc-400 font-medium hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">restaurant_menu</span>
+                Menu
+            </a>
+<!-- Active Tab: Tables -->
+<a class="flex items-center gap-3 px-4 py-3 text-orange-600 dark:text-orange-500 bg-orange-50 dark:bg-orange-950/30 rounded-lg font-bold hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">table_bar</span>
+                Tables
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-500 dark:text-zinc-400 font-medium hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">groups</span>
+                Waiters
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-500 dark:text-zinc-400 font-medium hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">event_available</span>
+                Reservations
+            </a>
+</div>
+<div class="mt-auto pt-4">
+<button class="w-full bg-primary text-on-primary font-button py-3 px-4 rounded-lg flex items-center justify-center gap-2 hover:bg-surface-tint transition-colors shadow-sm min-h-[touch-target-min] active:scale-95 transform transition-transform">
+<span class="material-symbols-outlined">add</span>
+                Quick Reserve
+            </button>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 md:ml-64 flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-40 w-full bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between px-container-padding h-16 font-['Plus_Jakarta_Sans']">
+<!-- Mobile Menu Toggle -->
+<button class="md:hidden text-zinc-500 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors p-2 min-h-[touch-target-min] min-w-[touch-target-min] flex items-center justify-center cursor-pointer active:opacity-70">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<!-- Search Bar (Left aligned per JSON) -->
+<div class="flex-1 flex items-center mr-4">
+<div class="relative w-full max-w-md hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-sm">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm font-body-md focus:ring-2 focus:ring-primary focus:bg-white transition-all h-[touch-target-min]" placeholder="Search tables..." type="text"/>
+</div>
+</div>
+<!-- Brand Logo (Hidden on Mobile per JSON style_brand_logo) -->
+<div class="hidden md:block text-xl font-bold text-zinc-900 dark:text-white absolute left-1/2 -translate-x-1/2">
+                MesaFácil
+            </div>
+<!-- Trailing Icons -->
+<div class="flex items-center gap-2">
+<button class="text-zinc-500 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors p-2 min-h-[touch-target-min] min-w-[touch-target-min] flex items-center justify-center cursor-pointer active:opacity-70">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-zinc-500 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors p-2 min-h-[touch-target-min] min-w-[touch-target-min] flex items-center justify-center cursor-pointer active:opacity-70 hidden sm:flex">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="text-zinc-500 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors p-2 min-h-[touch-target-min] min-w-[touch-target-min] flex items-center justify-center cursor-pointer active:opacity-70">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 p-container-padding pb-32">
+<!-- Header Section -->
+<div class="mb-lg flex justify-between items-end">
+<div>
+<h2 class="font-h1 text-h1 text-on-surface">Tables Management</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage active tables and QR codes.</p>
+</div>
+</div>
+<!-- Tables Grid (Bento/Card Style) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-md">
+<!-- Table Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_24px_rgba(26,26,26,0.06)] border border-surface-variant overflow-hidden flex flex-col">
+<div class="p-md flex justify-between items-start border-b border-surface-container-highest">
+<div>
+<span class="font-label-caps text-label-caps text-primary uppercase tracking-wider">Indoor</span>
+<h3 class="font-h2 text-h2 text-on-surface mt-1">Table 01</h3>
+</div>
+<div class="bg-surface-container-low px-3 py-1 rounded-full flex items-center gap-1">
+<div class="w-2 h-2 rounded-full bg-green-500"></div>
+<span class="font-body-md text-xs font-medium text-on-surface">Available</span>
+</div>
+</div>
+<div class="p-md flex-1 flex gap-4">
+<div class="w-20 h-20 bg-surface-container-highest rounded-lg flex items-center justify-center flex-shrink-0 relative overflow-hidden group">
+<img alt="A close-up shot of a stylized, modern QR code printed on a small, elegant white card resting on a wooden restaurant table. Soft, warm overhead lighting highlights the clean lines of the QR code against a slightly blurred background of a modern dining room setting with orange accents." class="w-full h-full object-cover opacity-80" data-alt="A close-up shot of a stylized, modern QR code printed on a small, elegant white card resting on a wooden restaurant table. Soft, warm overhead lighting highlights the clean lines of the QR code against a slightly blurred background of a modern dining room setting with orange accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeQ_tY4h6UD2yiefJ3MELzVotKVkDf_0OjT3gxfsvT4IHz_NCbEFvSqf4yCWEnCyWu_ANqBrE5JPIGNi4jxuDTI4V1nFYxqmUI82u77TbUzdagvFJfxUEkkubX6SHKDamFYXAFRXH2OjRb_QCNaOGpTTwpc8qc-rO2suAdeBEb34oMuWtDlxX4KAcBDNycJZMmJxF_iPN1clo3AgN5PmpIeoSeQguYYFaVl-NezhKOKfYFLF-3epG7oKXQPvEhd57NZ79-rJVcfh4"/>
+<div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-white">download</span>
+</div>
+</div>
+<div class="flex-1 flex flex-col justify-center">
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-1">Assigned Waiter</p>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-secondary-container flex items-center justify-center text-xs overflow-hidden">
+<img alt="Waiter Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRU6uUXMDtkCcHJ7rWHe1zSNABQGeWEt4705QVYAZPRkQ4a27rZ-IgGSNSXzGA4tRDU9TeXFN5WZmof5SR8Np1FEIe2bEsKmquS9P4HiCC99ELXdzK9Jrc8FqRnjWz1tGng4qPi7K4kU_5tLYDov02ULKURD7ipdv2QlOzIGEAfvznqJPm1rSjDHMfM0AAu60XZeX2hbv6zR4dlRM8WzEPtX9yAOGghDqISC8Q7HSfr3gq_GHsLZX_a3g-KMUNVMfBx-KqMu7EaT8"/>
+</div>
+<span class="font-body-md text-sm font-medium text-on-surface">Carlos M.</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-2 flex justify-end gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors min-h-[touch-target-min] min-w-[touch-target-min] flex items-center justify-center rounded-lg hover:bg-surface-variant">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors min-h-[touch-target-min] min-w-[touch-target-min] flex items-center justify-center rounded-lg hover:bg-surface-variant">
+<span class="material-symbols-outlined text-sm">qr_code_2</span>
+</button>
+</div>
+</div>
+<!-- Table Card 2 (Occupied) -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_24px_rgba(26,26,26,0.06)] border border-surface-variant overflow-hidden flex flex-col">
+<div class="p-md flex justify-between items-start border-b border-surface-container-highest">
+<div>
+<span class="font-label-caps text-label-caps text-primary uppercase tracking-wider">Patio</span>
+<h3 class="font-h2 text-h2 text-on-surface mt-1">Table 02</h3>
+</div>
+<div class="bg-surface-container-low px-3 py-1 rounded-full flex items-center gap-1">
+<div class="w-2 h-2 rounded-full bg-red-500"></div>
+<span class="font-body-md text-xs font-medium text-on-surface">Occupied</span>
+</div>
+</div>
+<div class="p-md flex-1 flex gap-4">
+<div class="w-20 h-20 bg-surface-container-highest rounded-lg flex items-center justify-center flex-shrink-0 relative overflow-hidden group">
+<img alt="A close-up shot of a stylized, modern QR code printed on a small, elegant white card resting on a wooden restaurant table. Soft, warm overhead lighting highlights the clean lines of the QR code against a slightly blurred background of a modern dining room setting with orange accents." class="w-full h-full object-cover opacity-80" data-alt="A close-up shot of a stylized, modern QR code printed on a small, elegant white card resting on a wooden restaurant table. Soft, warm overhead lighting highlights the clean lines of the QR code against a slightly blurred background of a modern dining room setting with orange accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvEC8h0ynOr8Z4V-rRr920UzXUe4mCNpvuUe8pB0684RbY24Fz9kFsv9Js_b1JpBacRPVYIIO2cZN7i4UEjIJztrKE8KVzx52uCtORZv8muHPkJEfNPwL9x6wwynQmudsqAN-8ZQFEhC1aNOoDNeIp9KZhd175f4-jtL511ySsD9luhsMoYlqwUbaTQMnUcNKDJzzhO7iQN85--jdlHUWxBZIaoJxgB3lrCQQxN2PNZ24dACcteqSynSBMfJ9-Lh7pfvwzTyghvwc"/>
+<div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-white">download</span>
+</div>
+</div>
+<div class="flex-1 flex flex-col justify-center">
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-1">Assigned Waiter</p>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-secondary-container flex items-center justify-center text-xs overflow-hidden">
+<img alt="Waiter Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNpAaHyK8hewg7b65pTpvKJ1SsWETrgomlRHtuS7maT9I5FzCp7gffqlhebCDaU2Prw24ZZMQWdV1B8Tv_oXQlhMjWwlx0qDm22T5pb1PNvrSoognt_BhYCJ5MZE6QZgdA71hSOLfX9b4ThiCWAN7WmSIcNMOGHpDbAIN4TRoGVjj1Uyx1fvprQOxj9Mq0bKH__wnBTD2rCzlxROzOItLii0X0WTN1TrDcAV2Ohk5C1VfPKCGl-cWql9DZxhX2cH2Bau8F_z1XzrU"/>
+</div>
+<span class="font-body-md text-sm font-medium text-on-surface">Ana R.</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-2 flex justify-end gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors min-h-[touch-target-min] min-w-[touch-target-min] flex items-center justify-center rounded-lg hover:bg-surface-variant">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors min-h-[touch-target-min] min-w-[touch-target-min] flex items-center justify-center rounded-lg hover:bg-surface-variant">
+<span class="material-symbols-outlined text-sm">qr_code_2</span>
+</button>
+</div>
+</div>
+<!-- Table Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_24px_rgba(26,26,26,0.06)] border border-surface-variant overflow-hidden flex flex-col opacity-70">
+<div class="p-md flex justify-between items-start border-b border-surface-container-highest">
+<div>
+<span class="font-label-caps text-label-caps text-primary uppercase tracking-wider">Indoor</span>
+<h3 class="font-h2 text-h2 text-on-surface mt-1">Table 03</h3>
+</div>
+<div class="bg-surface-container-low px-3 py-1 rounded-full flex items-center gap-1">
+<div class="w-2 h-2 rounded-full bg-orange-400"></div>
+<span class="font-body-md text-xs font-medium text-on-surface">Reserved</span>
+</div>
+</div>
+<div class="p-md flex-1 flex gap-4">
+<div class="w-20 h-20 bg-surface-container-highest rounded-lg flex items-center justify-center flex-shrink-0 relative overflow-hidden group">
+<img alt="A close-up shot of a stylized, modern QR code printed on a small, elegant white card resting on a wooden restaurant table. Soft, warm overhead lighting highlights the clean lines of the QR code against a slightly blurred background of a modern dining room setting with orange accents." class="w-full h-full object-cover opacity-80" data-alt="A close-up shot of a stylized, modern QR code printed on a small, elegant white card resting on a wooden restaurant table. Soft, warm overhead lighting highlights the clean lines of the QR code against a slightly blurred background of a modern dining room setting with orange accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSbvvLmjhhUa5V5Hs2MAmXIuSlDms7oA6dMMuo6dZrTORWYbltl1ExKmZBcBqYP0-5WVKvkyUiBb2HySexO--_sVBKH0vCi2TgYEHac3dIOmhYGcORLs8eL5z2lSAvzZRTkLskB-UaYr6L-5l7fQTrgNvJgjMI4B7YlPZGP6jXi0pLfjCyOEZPSh0D28WI7lW1U5AuPRY7LTjsN3gqCq4cfPKBcT_vv1IT_PSdi4z_ODwC5fli6tCUNtwTn5Rnn2xXNUM5U29rPs0"/>
+<div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-white">download</span>
+</div>
+</div>
+<div class="flex-1 flex flex-col justify-center">
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-1">Assigned Waiter</p>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-secondary-container flex items-center justify-center text-xs overflow-hidden">
+<img alt="Waiter Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDO8VuLUo6UMuBEBJrZp2ZwjtrJD78ZqN_xoIz9A48BWb0XST78bpaLNLPc_GLNsAS-HUtD77sf_tcJZqORADA_EttV46-BCrC7aehqDOajsgkl2rU9-xQ3paC92POEgI61gq_FJI0qX9ws-h-MSwsWN-srZOH1WbdYWI8Cae0ZCUemAV_ELkVSOAxSyTewtlNc3MIrp1XACDdozbKW-HmKSxNxB91ypXaI3QNVGtzRplojO2lidcpfwwASKimIksj8DLmAf4At0Lc"/>
+</div>
+<span class="font-body-md text-sm font-medium text-on-surface">Carlos M.</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-2 flex justify-end gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors min-h-[touch-target-min] min-w-[touch-target-min] flex items-center justify-center rounded-lg hover:bg-surface-variant">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors min-h-[touch-target-min] min-w-[touch-target-min] flex items-center justify-center rounded-lg hover:bg-surface-variant">
+<span class="material-symbols-outlined text-sm">qr_code_2</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Sticky Action Buttons (Mobile Centric) -->
+<div class="fixed bottom-0 left-0 md:left-64 right-0 bg-surface-container-lowest/90 backdrop-blur-md border-t border-surface-variant p-container-padding pb-[env(safe-area-inset-bottom,20px)] shadow-[0_-4px_24px_rgba(26,26,26,0.08)] z-30">
+<div class="flex flex-col sm:flex-row gap-sm max-w-3xl mx-auto">
+<button class="flex-1 bg-surface-container-lowest border-2 border-on-surface-variant text-on-surface font-button py-3 px-4 rounded-xl flex items-center justify-center gap-2 hover:bg-surface-variant transition-colors min-h-[touch-target-min]">
+<span class="material-symbols-outlined">autorenew</span>
+                    Regenerate All QRs
+                </button>
+<button class="flex-1 bg-primary text-on-primary font-button py-3 px-4 rounded-xl flex items-center justify-center gap-2 hover:bg-surface-tint transition-colors shadow-sm min-h-[touch-target-min] shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]">
+<span class="material-symbols-outlined">download_for_offline</span>
+                    Download All QRs
+                </button>
+</div>
+</div>
+<!-- Edit Table Panel / Bottom Sheet (Hidden by default, structure provided) -->
+<!-- Normally hidden, showing for demonstration of the 'removes Capacity field' requirement -->
+<div class="hidden fixed inset-0 z-50 bg-black/50 flex justify-end">
+<!-- Overlay -->
+<div class="absolute inset-0"></div>
+<!-- Panel -->
+<div class="relative w-full max-w-md h-full bg-surface-container-lowest shadow-2xl flex flex-col md:rounded-l-2xl overflow-hidden mt-16 md:mt-0">
+<div class="p-lg border-b border-surface-variant flex justify-between items-center bg-surface-bright">
+<h3 class="font-h2 text-h2 text-on-surface">Edit Table 01</h3>
+<button class="p-2 text-on-surface-variant hover:text-error transition-colors min-h-[touch-target-min] min-w-[touch-target-min] flex items-center justify-center rounded-full hover:bg-error-container">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="p-lg flex-1 overflow-y-auto space-y-6">
+<!-- Form Field: Table Name/Number -->
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">Table Name / Number</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl py-3 px-4 font-body-md text-on-surface focus:ring-2 focus:ring-primary focus:bg-white transition-all h-[touch-target-min]" type="text" value="Table 01"/>
+</div>
+<!-- Form Field: Area -->
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">Dining Area</label>
+<select class="w-full bg-surface-container-low border-none rounded-xl py-3 px-4 font-body-md text-on-surface focus:ring-2 focus:ring-primary focus:bg-white transition-all h-[touch-target-min] appearance-none">
+<option>Indoor</option>
+<option>Patio</option>
+<option>Bar</option>
+</select>
+</div>
+<!-- Form Field: Assigned Waiter -->
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">Assigned Waiter</label>
+<div class="flex items-center gap-3 bg-surface-container-low rounded-xl p-2 pr-4 border border-transparent focus-within:ring-2 focus-within:ring-primary focus-within:bg-white transition-all">
+<div class="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center overflow-hidden">
+<img alt="Waiter Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBieVxbBGwWUuh2pD28VTsxzD-wWw3GuDacCl2-Sza6PkRFw5Z5OjSWL_lgCeg5fbogX1gg9P9HuKxAcjOQDZIG8Q_FTJOqdLhPTKAaj3l8iIXAYYUmRuxekORECpMuJ0yUD8LsXx48T_54ybDt2LvHAJH6z4SDJwwx6D8qE3BiCPDy_Iv3vDMC-CIGZgSBAIWveDHB6mV63Q3nQFN48sy2fIxzn3U3y5oabOxlrLXMzLQmasJla9gEZbn9bDIo87hQnzNoDYHDHa4"/>
+</div>
+<select class="flex-1 bg-transparent border-none p-0 font-body-md text-on-surface focus:ring-0 appearance-none h-[touch-target-min]">
+<option>Carlos M.</option>
+<option>Ana R.</option>
+<option>Unassigned</option>
+</select>
+<span class="material-symbols-outlined text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Notice: Capacity field deliberately removed per prompt -->
+</div>
+<div class="p-lg border-t border-surface-variant bg-surface-bright flex gap-sm">
+<button class="flex-1 bg-surface-container-low text-on-surface font-button py-3 px-4 rounded-xl flex items-center justify-center hover:bg-surface-variant transition-colors min-h-[touch-target-min]">
+                        Cancel
+                    </button>
+<button class="flex-1 bg-primary text-on-primary font-button py-3 px-4 rounded-xl flex items-center justify-center hover:bg-surface-tint transition-colors shadow-sm min-h-[touch-target-min]">
+                        Save Changes
+                    </button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

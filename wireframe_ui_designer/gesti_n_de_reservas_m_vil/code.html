@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MesaFácil - Reservations</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#8e7164",
+                        "background": "#f9f9f9",
+                        "surface-variant": "#e2e2e2",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#5a4136",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "primary-fixed": "#ffdbcc",
+                        "surface-container-highest": "#e2e2e2",
+                        "inverse-primary": "#ffb693",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#351000",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#e5e2e1",
+                        "outline-variant": "#e2bfb0",
+                        "on-secondary-fixed-variant": "#474746",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#e2dfde",
+                        "on-background": "#1a1c1c",
+                        "inverse-on-surface": "#f1f1f1",
+                        "surface-container-high": "#e8e8e8",
+                        "on-surface": "#1a1c1c",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "surface-dim": "#dadada",
+                        "surface": "#f9f9f9",
+                        "primary": "#a04100",
+                        "on-tertiary-container": "#581f00",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "on-tertiary-fixed": "#360f00",
+                        "tertiary-fixed-dim": "#ffb595",
+                        "tertiary": "#a23f00",
+                        "surface-container-low": "#f3f3f3",
+                        "surface-bright": "#f9f9f9",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-tertiary-fixed-variant": "#7c2e00",
+                        "inverse-surface": "#2f3131",
+                        "tertiary-container": "#fd6c19",
+                        "surface-tint": "#a04100",
+                        "on-secondary-container": "#636262",
+                        "on-primary-container": "#572000",
+                        "secondary": "#5f5e5e",
+                        "primary-container": "#ff6b00",
+                        "surface-container": "#eeeeee",
+                        "primary-fixed-dim": "#ffb693",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "touch-target-min": "48px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "base": "8px",
+                        "xs": "4px",
+                        "sm": "12px",
+                        "xl": "32px",
+                        "container-padding": "20px"
+                    },
+                    "fontFamily": {
+                        "h3": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h1": ["Plus Jakarta Sans"],
+                        "button": ["Inter"],
+                        "h2": ["Plus Jakarta Sans"],
+                        "label-caps": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h1": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "button": ["16px", { "lineHeight": "1", "fontWeight": "600" }],
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Base styles to ensure consistency */
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        .ambient-shadow {
+            box-shadow: 0 4px 24px -4px rgba(26, 26, 26, 0.08);
+        }
+        .lifted-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px -8px rgba(26, 26, 26, 0.12);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="antialiased font-body-md text-body-md overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (Hidden on Mobile) -->
+<nav class="fixed left-0 top-0 h-screen w-64 border-r border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-sm hidden md:flex flex-col z-50">
+<div class="p-lg border-b border-zinc-100 dark:border-zinc-800">
+<h1 class="text-2xl font-extrabold tracking-tighter text-orange-600 dark:text-orange-500 font-['Plus_Jakarta_Sans']">MesaFácil</h1>
+<p class="font-body-md text-body-md text-zinc-500 mt-xs">Restaurant Admin</p>
+</div>
+<div class="flex flex-col h-full p-4 gap-base font-['Plus_Jakarta_Sans'] text-sm antialiased mt-md">
+<!-- Menu -->
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-500 dark:text-zinc-400 font-medium hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">restaurant_menu</span> Menu
+            </a>
+<!-- Tables -->
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-500 dark:text-zinc-400 font-medium hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">table_bar</span> Tables
+            </a>
+<!-- Waiters -->
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-500 dark:text-zinc-400 font-medium hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">groups</span> Waiters
+            </a>
+<!-- Reservations (Active) -->
+<a class="flex items-center gap-3 px-4 py-3 text-orange-600 dark:text-orange-500 bg-orange-50 dark:bg-orange-950/30 rounded-lg font-bold active:scale-95 transform transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">event_available</span> Reservations
+            </a>
+</div>
+<div class="p-lg mt-auto border-t border-zinc-100 dark:border-zinc-800">
+<button class="w-full flex items-center justify-center gap-2 bg-primary text-on-primary font-button text-button py-sm px-md rounded-lg shadow-[inset_0_1px_rgba(255,255,255,0.2)] hover:bg-tertiary transition-colors h-touch-target-min">
+<span class="material-symbols-outlined">add</span> Quick Reserve
+            </button>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="md:ml-64 flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-40 w-full bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between px-8 h-16">
+<div class="flex items-center gap-md">
+<!-- Mobile Menu Button -->
+<button class="md:hidden text-orange-600 dark:text-orange-500 cursor-pointer active:opacity-70 flex items-center justify-center w-touch-target-min h-touch-target-min rounded-full hover:bg-surface-container">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<span class="hidden md:block text-xl font-bold text-zinc-900 dark:text-white font-['Plus_Jakarta_Sans']">MesaFácil</span>
+</div>
+<div class="flex items-center gap-sm text-zinc-500 dark:text-zinc-400 font-['Plus_Jakarta_Sans']">
+<!-- In a real app, search bar logic applies here. Just showing trailing icons for now based on JSON -->
+<button class="flex items-center justify-center w-touch-target-min h-touch-target-min rounded-full hover:text-orange-600 dark:hover:text-orange-400 transition-colors cursor-pointer active:opacity-70">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="flex items-center justify-center w-touch-target-min h-touch-target-min rounded-full hover:text-orange-600 dark:hover:text-orange-400 transition-colors cursor-pointer active:opacity-70">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="flex items-center justify-center w-touch-target-min h-touch-target-min rounded-full hover:text-orange-600 dark:hover:text-orange-400 transition-colors cursor-pointer active:opacity-70">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 p-container-padding pb-32 md:pb-container-padding flex flex-col gap-xl">
+<!-- Quick Reserve Section (Mobile Friendly Form) -->
+<section class="bg-surface-container-lowest rounded-xl p-lg ambient-shadow border border-surface-variant">
+<div class="flex items-center gap-sm mb-lg">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">add_task</span>
+</div>
+<h2 class="font-h2 text-h2 text-on-surface">New Booking</h2>
+</div>
+<form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md items-end">
+<div class="flex flex-col gap-base">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Guest Name</label>
+<input class="w-full bg-surface border-transparent focus:border-primary focus:ring-1 focus:ring-primary rounded-lg font-body-md text-body-md text-on-surface px-md h-touch-target-min transition-all shadow-sm" placeholder="e.g. John Doe" type="text"/>
+</div>
+<div class="flex flex-col gap-base">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Phone Number</label>
+<input class="w-full bg-surface border-transparent focus:border-primary focus:ring-1 focus:ring-primary rounded-lg font-body-md text-body-md text-on-surface px-md h-touch-target-min transition-all shadow-sm" placeholder="+1 (555) 000-0000" type="tel"/>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="flex flex-col gap-base">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Pax</label>
+<select class="w-full bg-surface border-transparent focus:border-primary focus:ring-1 focus:ring-primary rounded-lg font-body-md text-body-md text-on-surface px-md h-touch-target-min transition-all shadow-sm cursor-pointer">
+<option>2 Guests</option>
+<option>3 Guests</option>
+<option>4 Guests</option>
+<option>5+ Guests</option>
+</select>
+</div>
+<div class="flex flex-col gap-base">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Time</label>
+<input class="w-full bg-surface border-transparent focus:border-primary focus:ring-1 focus:ring-primary rounded-lg font-body-md text-body-md text-on-surface px-md h-touch-target-min transition-all shadow-sm cursor-pointer" type="time" value="19:00"/>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary font-button text-button h-touch-target-min rounded-lg shadow-[inset_0_1px_rgba(255,255,255,0.2)] hover:bg-tertiary transition-colors flex items-center justify-center gap-2" type="button">
+                        Confirm Booking
+                    </button>
+</form>
+</section>
+<!-- Today's Bookings Grid -->
+<section class="flex flex-col gap-lg">
+<div class="flex items-end justify-between border-b border-surface-variant pb-sm">
+<div>
+<h1 class="font-h1 text-h1 text-on-surface">Today's Bookings</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Tuesday, Oct 24 • 14 Reservations</p>
+</div>
+<div class="hidden sm:flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-caps text-label-caps text-primary">Live Updates</span>
+</div>
+</div>
+<!-- Bento Grid Layout for Bookings -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-lg">
+<!-- Card 1: Confirmed -->
+<div class="bg-surface-container-lowest rounded-xl p-lg ambient-shadow border border-surface-variant flex flex-col gap-md lifted-hover transition-all duration-300 group cursor-pointer relative overflow-hidden">
+<!-- Decorative accent line -->
+<div class="absolute top-0 left-0 w-full h-1 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="font-h3 text-h3">18</span>
+<span class="text-[10px] uppercase font-bold mt-1">:30</span>
+</div>
+<div>
+<h3 class="font-h3 text-h3 text-on-surface">Elena Rodriguez</h3>
+<div class="flex items-center gap-1 text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[16px]">group</span>
+<span class="font-body-md text-body-md text-sm">4 Guests</span>
+</div>
+</div>
+</div>
+<span class="inline-flex items-center px-sm py-xs rounded-full bg-primary-container/20 text-primary font-label-caps text-label-caps border border-primary/10">
+                                Confirmed
+                            </span>
+</div>
+<div class="pt-sm border-t border-surface-variant flex justify-between items-center text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">table_bar</span>
+<span class="font-body-md text-body-md text-sm">Table 12 (Patio)</span>
+</div>
+<button class="w-8 h-8 rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Card 2: Pending -->
+<div class="bg-surface-container-lowest rounded-xl p-lg ambient-shadow border border-surface-variant flex flex-col gap-md lifted-hover transition-all duration-300 group cursor-pointer relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-secondary scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="font-h3 text-h3">19</span>
+<span class="text-[10px] uppercase font-bold mt-1">:00</span>
+</div>
+<div>
+<h3 class="font-h3 text-h3 text-on-surface">Michael Chen</h3>
+<div class="flex items-center gap-1 text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[16px]">group</span>
+<span class="font-body-md text-body-md text-sm">2 Guests</span>
+</div>
+</div>
+</div>
+<span class="inline-flex items-center px-sm py-xs rounded-full bg-secondary-container text-on-secondary-container font-label-caps text-label-caps border border-surface-variant">
+                                Pending
+                            </span>
+</div>
+<div class="pt-sm border-t border-surface-variant flex gap-sm">
+<button class="flex-1 py-2 rounded-lg border border-outline-variant text-primary font-button text-sm hover:bg-surface-container transition-colors">Decline</button>
+<button class="flex-1 py-2 rounded-lg bg-primary text-on-primary font-button text-sm shadow-[inset_0_1px_rgba(255,255,255,0.2)] hover:bg-tertiary transition-colors">Accept</button>
+</div>
+</div>
+<!-- Card 3: Confirmed with Tags -->
+<div class="bg-surface-container-lowest rounded-xl p-lg ambient-shadow border border-surface-variant flex flex-col gap-md lifted-hover transition-all duration-300 group cursor-pointer relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant opacity-50">
+<span class="font-h3 text-h3">19</span>
+<span class="text-[10px] uppercase font-bold mt-1">:30</span>
+</div>
+<div>
+<h3 class="font-h3 text-h3 text-on-surface">Sarah Jenkins</h3>
+<div class="flex items-center gap-1 text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[16px]">group</span>
+<span class="font-body-md text-body-md text-sm">6 Guests</span>
+</div>
+</div>
+</div>
+<span class="inline-flex items-center px-sm py-xs rounded-full bg-primary-container/20 text-primary font-label-caps text-label-caps border border-primary/10">
+                                Confirmed
+                            </span>
+</div>
+<div class="flex flex-wrap gap-2 pt-1">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-surface-container text-on-surface-variant font-body-md text-[12px] font-medium border border-surface-variant">Gluten-Free</span>
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-surface-container text-on-surface-variant font-body-md text-[12px] font-medium border border-surface-variant">Birthday</span>
+</div>
+<div class="pt-sm border-t border-surface-variant flex justify-between items-center text-on-surface-variant mt-auto">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">table_bar</span>
+<span class="font-body-md text-body-md text-sm">Table 04 (Main Room)</span>
+</div>
+<button class="w-8 h-8 rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+</body></html>

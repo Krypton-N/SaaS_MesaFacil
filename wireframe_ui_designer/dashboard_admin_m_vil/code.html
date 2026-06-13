@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MesaFácil - Administrative Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#8e7164",
+                        "background": "#f9f9f9",
+                        "surface-variant": "#e2e2e2",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#5a4136",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "primary-fixed": "#ffdbcc",
+                        "surface-container-highest": "#e2e2e2",
+                        "inverse-primary": "#ffb693",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#351000",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#e5e2e1",
+                        "outline-variant": "#e2bfb0",
+                        "on-secondary-fixed-variant": "#474746",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#e2dfde",
+                        "on-background": "#1a1c1c",
+                        "inverse-on-surface": "#f1f1f1",
+                        "surface-container-high": "#e8e8e8",
+                        "on-surface": "#1a1c1c",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "surface-dim": "#dadada",
+                        "surface": "#f9f9f9",
+                        "primary": "#a04100",
+                        "on-tertiary-container": "#581f00",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "on-tertiary-fixed": "#360f00",
+                        "tertiary-fixed-dim": "#ffb595",
+                        "tertiary": "#a23f00",
+                        "surface-container-low": "#f3f3f3",
+                        "surface-bright": "#f9f9f9",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-tertiary-fixed-variant": "#7c2e00",
+                        "inverse-surface": "#2f3131",
+                        "tertiary-container": "#fd6c19",
+                        "surface-tint": "#a04100",
+                        "on-secondary-container": "#636262",
+                        "on-primary-container": "#572000",
+                        "secondary": "#5f5e5e",
+                        "primary-container": "#ff6b00",
+                        "surface-container": "#eeeeee",
+                        "primary-fixed-dim": "#ffb693",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "touch-target-min": "48px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "base": "8px",
+                        "xs": "4px",
+                        "sm": "12px",
+                        "xl": "32px",
+                        "container-padding": "20px"
+                    },
+                    "fontFamily": {
+                        "h3": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h1": ["Plus Jakarta Sans"],
+                        "button": ["Inter"],
+                        "h2": ["Plus Jakarta Sans"],
+                        "label-caps": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h1": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "button": ["16px", { "lineHeight": "1", "fontWeight": "600" }],
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Soft, diffused ambient shadow for high-end feel */
+        .ambient-shadow {
+            box-shadow: 0 4px 20px rgba(26, 26, 26, 0.06);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- Desktop Side NavBar (Hidden on Mobile) -->
+<nav class="hidden md:flex flex-col h-full p-4 fixed left-0 top-0 h-screen w-64 border-r border-surface-variant bg-surface-container-lowest shadow-sm z-50">
+<div class="mb-8 px-4">
+<h1 class="text-2xl font-extrabold tracking-tighter text-primary">MesaFácil</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Restaurant Admin</p>
+</div>
+<div class="flex-1 flex flex-col gap-2">
+<!-- Menu - Inactive -->
+<a class="flex items-center gap-3 px-4 py-3 text-secondary font-medium rounded-lg hover:bg-surface-container transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+<span class="font-button text-button">Menu</span>
+</a>
+<!-- Tables - ACTIVE (Dashboard Intent) -->
+<a class="flex items-center gap-3 px-4 py-3 text-primary bg-primary-fixed rounded-lg font-bold active:scale-95 transform transition-transform" href="#">
+<span class="material-symbols-outlined fill-icon" data-icon="table_bar" data-weight="fill">table_bar</span>
+<span class="font-button text-button">Tables</span>
+</a>
+<!-- Waiters - Inactive -->
+<a class="flex items-center gap-3 px-4 py-3 text-secondary font-medium rounded-lg hover:bg-surface-container transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-button text-button">Waiters</span>
+</a>
+<!-- Reservations - Inactive -->
+<a class="flex items-center gap-3 px-4 py-3 text-secondary font-medium rounded-lg hover:bg-surface-container transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="event_available">event_available</span>
+<span class="font-button text-button">Reservations</span>
+</a>
+</div>
+<div class="mt-auto">
+<button class="w-full bg-primary text-on-primary rounded-lg py-3 px-4 font-button text-button shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] hover:bg-surface-tint transition-colors flex items-center justify-center gap-2 touch-target-min">
+<span class="material-symbols-outlined">add</span>
+                Quick Reserve
+            </button>
+</div>
+</nav>
+<!-- Top App Bar (Mobile & Desktop Header) -->
+<!-- Shell Border Ban implemented: removed border-b, relying on tonal difference/backdrop blur -->
+<header class="bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md sticky top-0 z-40 w-full flex items-center justify-between px-8 h-16 md:ml-64 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+<div class="flex items-center gap-4">
+<!-- Mobile Menu Hamburger (Visible only on mobile) -->
+<button class="md:hidden text-primary cursor-pointer active:opacity-70 p-2 -ml-2 rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="md:hidden text-xl font-h2 text-h2 font-bold text-on-surface tracking-tight">MesaFácil</h1>
+<h1 class="hidden md:block font-h2 text-h2 font-bold text-on-surface tracking-tight">Dashboard overview</h1>
+</div>
+<div class="flex items-center gap-4 text-secondary">
+<button class="cursor-pointer active:opacity-70 hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-container relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="cursor-pointer active:opacity-70 hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-container hidden sm:block">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<button class="cursor-pointer active:opacity-70 hover:text-primary transition-colors p-1 rounded-full hover:bg-surface-container">
+<img alt="Admin User Avatar" class="w-8 h-8 rounded-full border-2 border-surface-container-lowest object-cover" data-alt="A close up portrait of a professional restaurant manager smiling warmly, well-lit in a modern dining environment, high definition, shallow depth of field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-Nw7M2j8Ka77rIVnsMgfLDugDZEHIlQtVqcKYmRdF6DGpPCVzn_O7JrnsEmG3ELleLvIBb6g9EYV6VvTVqbgC9xY1nMmzR3PP4TU-jPAti-cU04Vg1UXDHJiK-xRCWgCv1DjnTa0AUAkqZKrEjxBlwpOHKLoXyKEkGkY3xRT5Fms2YWcsUuGnZUOStzg5KSTCUT98ILBIYH5Bmtb9ItxWkfGOh3Thy8brP7cBdt8DRNz68zVMzRPsccHSeVBbHtfksrK9hRvSkpU"/>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 p-container-padding pb-32 md:pb-container-padding max-w-7xl mx-auto">
+<!-- Mobile Header (Contextual) -->
+<div class="mb-lg md:hidden">
+<h2 class="font-h1 text-h1 text-on-surface mb-xs">Live Status</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Friday, Oct 27 • Dinner Service</p>
+</div>
+<div class="hidden md:block mb-lg">
+<p class="font-body-md text-body-md text-on-surface-variant">Friday, Oct 27 • Dinner Service</p>
+</div>
+<!-- Bento Grid: Real-time Metrics -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-xl">
+<!-- Primary Metric: Active Orders (Glassmorphism / High-end focus) -->
+<div class="md:col-span-2 bg-primary text-on-primary rounded-xl p-lg relative overflow-hidden shadow-[0_8px_30px_rgba(160,65,0,0.2)] flex flex-col justify-between min-h-[160px]">
+<!-- Abstract background texture simulation via gradients -->
+<div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
+<div class="absolute -right-10 -top-10 w-40 h-40 bg-white/5 rounded-full blur-2xl pointer-events-none"></div>
+<div class="relative z-10 flex justify-between items-start">
+<div>
+<p class="font-label-caps text-label-caps uppercase tracking-wider text-on-primary/80 mb-1">Active Kitchen Orders</p>
+<h3 class="font-h1 text-[48px] font-bold leading-none">24</h3>
+</div>
+<div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary fill-icon" style="font-size: 28px;">receipt_long</span>
+</div>
+</div>
+<div class="relative z-10 mt-6 flex items-center gap-2">
+<span class="flex h-3 w-3 relative">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-40"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-[#4ade80]"></span>
+</span>
+<span class="font-body-md text-body-md text-on-primary/90">Kitchen is running at capacity</span>
+</div>
+</div>
+<!-- Secondary Metric: Occupied Tables -->
+<div class="bg-surface-container-lowest rounded-xl p-lg ambient-shadow border border-surface-variant/50 flex flex-col justify-between min-h-[160px]">
+<div class="flex justify-between items-start mb-4">
+<p class="font-label-caps text-label-caps uppercase text-on-surface-variant">Occupied Tables</p>
+<span class="material-symbols-outlined text-primary">deck</span>
+</div>
+<div>
+<div class="flex items-baseline gap-1">
+<h3 class="font-h1 text-[40px] text-on-surface font-bold leading-none">18</h3>
+<span class="font-body-lg text-body-lg text-on-surface-variant">/ 40</span>
+</div>
+<!-- Mini progress bar -->
+<div class="w-full bg-surface-container h-1.5 rounded-full mt-3 overflow-hidden">
+<div class="bg-tertiary-container h-full rounded-full w-[45%]"></div>
+</div>
+</div>
+</div>
+<!-- Tertiary Metric: Upcoming Reservations -->
+<div class="bg-surface-container-lowest rounded-xl p-lg ambient-shadow border border-surface-variant/50 flex flex-col justify-between min-h-[160px] md:col-start-3">
+<div class="flex justify-between items-start mb-4">
+<p class="font-label-caps text-label-caps uppercase text-on-surface-variant">Next Hour Resvs</p>
+<span class="material-symbols-outlined text-secondary">schedule</span>
+</div>
+<div class="flex items-center justify-between">
+<h3 class="font-h1 text-[40px] text-on-surface font-bold leading-none">12</h3>
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full bg-surface-variant border-2 border-white flex items-center justify-center text-xs font-bold text-on-surface-variant">2p</div>
+<div class="w-8 h-8 rounded-full bg-surface-variant border-2 border-white flex items-center justify-center text-xs font-bold text-on-surface-variant">4p</div>
+<div class="w-8 h-8 rounded-full bg-primary-container border-2 border-white flex items-center justify-center text-xs font-bold text-on-primary-container">+10</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Live Activity Feed -->
+<section>
+<div class="flex items-center justify-between mb-md">
+<h2 class="font-h2 text-h2 text-on-surface">Live Activity</h2>
+<button class="font-button text-button text-primary hover:text-surface-tint transition-colors">View All</button>
+</div>
+<div class="bg-surface-container-lowest rounded-xl ambient-shadow border border-surface-variant/50 overflow-hidden">
+<!-- Feed Item 1 -->
+<div class="flex items-start gap-sm p-4 border-b border-surface-container last:border-0 hover:bg-surface transition-colors cursor-pointer touch-target-min">
+<div class="mt-1 w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center flex-shrink-0 text-primary">
+<span class="material-symbols-outlined" style="font-size: 20px;">room_service</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<p class="font-h3 text-body-lg text-on-surface">Order #1042 ready</p>
+<span class="font-label-caps text-label-caps text-secondary">Just now</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">Table 12 • 4 items</p>
+</div>
+</div>
+<!-- Feed Item 2 -->
+<div class="flex items-start gap-sm p-4 border-b border-surface-container last:border-0 hover:bg-surface transition-colors cursor-pointer touch-target-min">
+<div class="mt-1 w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center flex-shrink-0 text-tertiary">
+<span class="material-symbols-outlined" style="font-size: 20px;">check_circle</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<p class="font-h3 text-body-lg text-on-surface">Table 08 Paid</p>
+<span class="font-label-caps text-label-caps text-secondary">5m ago</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">Card • $142.50</p>
+</div>
+</div>
+<!-- Feed Item 3 -->
+<div class="flex items-start gap-sm p-4 border-b border-surface-container last:border-0 hover:bg-surface transition-colors cursor-pointer touch-target-min">
+<div class="mt-1 w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center flex-shrink-0 text-secondary">
+<span class="material-symbols-outlined" style="font-size: 20px;">hail</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<p class="font-h3 text-body-lg text-on-surface">New Walk-in</p>
+<span class="font-label-caps text-label-caps text-secondary">12m ago</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">Party of 2 • Seated at Table 04</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Mobile Bottom Navigation Shell (Synthesized from JSON SideNavBar logic) -->
+<!-- Shell Border Ban implemented: removed border-t, relying on background tonal shift and subtle shadow -->
+<nav class="md:hidden fixed bottom-0 w-full bg-surface-container-lowest shadow-[0_-4px_20px_rgba(0,0,0,0.05)] flex justify-around items-center h-[80px] pb-safe z-50 px-2">
+<!-- Menu - Inactive -->
+<a class="flex flex-col items-center justify-center gap-1 p-2 w-16 text-secondary hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+<span class="font-label-caps text-[10px] tracking-normal capitalize">Menu</span>
+</a>
+<!-- Tables - ACTIVE (Dashboard Intent) -->
+<a class="flex flex-col items-center justify-center gap-1 p-2 w-16 text-primary" href="#">
+<div class="bg-primary-fixed w-14 h-8 rounded-full flex items-center justify-center mb-0.5">
+<span class="material-symbols-outlined fill-icon" data-icon="table_bar" data-weight="fill">table_bar</span>
+</div>
+<span class="font-label-caps text-[10px] tracking-normal capitalize font-bold">Tables</span>
+</a>
+<!-- Waiters - Inactive -->
+<a class="flex flex-col items-center justify-center gap-1 p-2 w-16 text-secondary hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-caps text-[10px] tracking-normal capitalize">Waiters</span>
+</a>
+<!-- Reservations - Inactive -->
+<a class="flex flex-col items-center justify-center gap-1 p-2 w-16 text-secondary hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="event_available">event_available</span>
+<span class="font-label-caps text-[10px] tracking-normal capitalize">Resvs</span>
+</a>
+</nav>
+</body></html>

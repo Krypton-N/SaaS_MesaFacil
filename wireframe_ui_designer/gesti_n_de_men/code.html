@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MesaFácil - Menu Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#eeeeee",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#f1f1f1",
+                        "background": "#f9f9f9",
+                        "surface-tint": "#a04100",
+                        "primary-fixed": "#ffdbcc",
+                        "on-background": "#1a1c1c",
+                        "secondary": "#5f5e5e",
+                        "on-secondary-fixed-variant": "#474746",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "inverse-primary": "#ffb693",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "on-tertiary-fixed-variant": "#7c2e00",
+                        "inverse-surface": "#2f3131",
+                        "outline-variant": "#e2bfb0",
+                        "on-tertiary-container": "#581f00",
+                        "surface-container-low": "#f3f3f3",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-surface": "#1a1c1c",
+                        "tertiary-fixed-dim": "#ffb595",
+                        "surface-container-high": "#e8e8e8",
+                        "on-primary-container": "#572000",
+                        "tertiary-container": "#fd6c19",
+                        "on-surface-variant": "#5a4136",
+                        "primary-container": "#ff6b00",
+                        "surface-variant": "#e2e2e2",
+                        "primary": "#a04100",
+                        "on-secondary-container": "#636262",
+                        "tertiary": "#a23f00",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-primary-fixed": "#351000",
+                        "surface": "#f9f9f9",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed-dim": "#ffb693",
+                        "surface-bright": "#f9f9f9",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#e5e2e1",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "tertiary-fixed": "#ffdbcd",
+                        "outline": "#8e7164",
+                        "surface-dim": "#dadada",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#e2dfde"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "container-padding": "20px",
+                        "xl": "32px",
+                        "xs": "4px",
+                        "touch-target-min": "48px",
+                        "sm": "12px",
+                        "lg": "24px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "h3": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "h2": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"],
+                        "h1": ["Plus Jakarta Sans"],
+                        "button": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h1": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "button": ["16px", { "lineHeight": "1", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased min-h-screen flex">
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-screen w-64 border-r border-r border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-sm font-['Plus_Jakarta_Sans'] text-sm antialiased z-50">
+<div class="flex flex-col h-full p-4">
+<div class="mb-8 px-4 py-2">
+<span class="text-2xl font-extrabold tracking-tighter text-orange-600 dark:text-orange-500">MesaFácil</span>
+<p class="text-xs text-zinc-500 mt-1">Restaurant Admin</p>
+</div>
+<div class="flex flex-col gap-2 flex-grow">
+<a class="flex items-center gap-3 px-4 py-3 text-orange-600 dark:text-orange-500 bg-orange-50 dark:bg-orange-950/30 rounded-lg font-bold active:scale-95 transform transition-transform" href="#">
+<span class="material-symbols-outlined icon-fill" data-icon="restaurant_menu">restaurant_menu</span>
+                    Menu
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-500 dark:text-zinc-400 font-medium hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-all duration-200 active:scale-95 transform transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="table_bar">table_bar</span>
+                    Tables
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-500 dark:text-zinc-400 font-medium hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-all duration-200 active:scale-95 transform transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+                    Waiters
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-500 dark:text-zinc-400 font-medium hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-all duration-200 active:scale-95 transform transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="event_available">event_available</span>
+                    Reservations
+                </a>
+</div>
+<div class="mt-auto">
+<button class="w-full bg-orange-600 text-white rounded-lg py-3 px-4 font-bold hover:bg-orange-700 transition-colors shadow-sm flex justify-center items-center gap-2">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+                    Quick Reserve
+                </button>
+<div class="mt-6 flex items-center gap-3 px-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
+<img alt="Admin User Avatar" class="w-8 h-8 rounded-full" data-alt="Professional headshot of restaurant manager in sharp lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeGly3Jx8ayLr-2tyZbLV74SOFxBewjhxmQligro_St7zBpB1OJ3reWjIfnT8RxjD9JJZOOESztdUjW57O_SmnSiIubH_qih6Cn5kiovUnpzLZNynMic5eHpz9ZjOuyNV_ZQ4xO0Y_7T7xAr3smSqlfIkUg_To_U3QKqmV5tGEKoUs3g2X-0ut6yD7aVIfP7RtQCtPvQHsxsu9Fqnf_rBGKHH4KT2pVJEx18oVewTXN_M5DGFyOtrKGdyoxnCudiGGY9hahEMboTY"/>
+<span class="text-sm font-medium text-zinc-700 dark:text-zinc-300">Admin</span>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 ml-64 flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-40 w-full bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-100 dark:border-zinc-800 font-['Plus_Jakarta_Sans']">
+<div class="flex items-center justify-between px-8 h-16">
+<div class="flex items-center gap-4">
+<div class="relative hidden md:flex items-center text-zinc-500 dark:text-zinc-400">
+<span class="material-symbols-outlined absolute left-3" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-2 bg-zinc-100 dark:bg-zinc-900 border-transparent rounded-full text-sm focus:border-orange-500 focus:ring-0 w-64 transition-all" placeholder="Search menu..." type="text"/>
+</div>
+</div>
+<div class="hidden md:block text-xl font-bold text-zinc-900 dark:text-white absolute left-1/2 -translate-x-1/2">
+                    MesaFácil
+                </div>
+<div class="flex items-center gap-4 text-zinc-500 dark:text-zinc-400">
+<button class="hover:text-orange-600 dark:hover:text-orange-400 transition-colors cursor-pointer active:opacity-70 p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-900">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="hover:text-orange-600 dark:hover:text-orange-400 transition-colors cursor-pointer active:opacity-70 p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-900">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<button class="hover:text-orange-600 dark:hover:text-orange-400 transition-colors cursor-pointer active:opacity-70 p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-900">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Workspace -->
+<main class="flex-1 p-lg lg:p-xl flex flex-col gap-lg max-w-7xl mx-auto w-full">
+<!-- Header & Actions -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-md">
+<div>
+<h1 class="font-h1 text-h1 text-on-background">Menu Management</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Organize categories and update dish details.</p>
+</div>
+<div class="flex flex-wrap items-center gap-sm">
+<button class="border border-secondary text-secondary hover:bg-surface-variant hover:text-on-surface transition-colors px-md py-sm rounded-full font-button text-button flex items-center gap-xs min-h-[48px]">
+<span class="material-symbols-outlined" data-icon="document_scanner">document_scanner</span>
+                        Upload menu photo for AI extraction
+                    </button>
+<button class="bg-primary text-on-primary hover:bg-tertiary transition-colors shadow-sm px-md py-sm rounded-full font-button text-button flex items-center gap-xs min-h-[48px]">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                        Add dish manually
+                    </button>
+</div>
+</div>
+<!-- Two Column Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg flex-1">
+<!-- Left Column: Categories -->
+<aside class="lg:col-span-3 flex flex-col gap-md">
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-md flex flex-col gap-sm">
+<div class="flex justify-between items-center mb-2 px-2">
+<h2 class="font-h3 text-h3 text-on-background">Categories</h2>
+<button class="text-primary hover:text-tertiary p-1 rounded-full hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+</button>
+</div>
+<div class="flex flex-col gap-1">
+<!-- Active Category -->
+<div class="group flex items-center justify-between p-sm bg-primary-fixed text-on-primary-container rounded-lg cursor-pointer border-l-4 border-primary">
+<span class="font-button text-button flex-1 truncate">Starters &amp; Tapas</span>
+<div class="flex gap-1 opacity-100">
+<button class="text-on-primary-container p-1 rounded hover:bg-white/50 transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+</div>
+</div>
+<!-- Inactive Categories -->
+<div class="group flex items-center justify-between p-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface rounded-lg cursor-pointer transition-colors border-l-4 border-transparent">
+<span class="font-body-md text-body-md flex-1 truncate">Main Courses</span>
+<div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-secondary p-1 rounded hover:bg-surface-variant transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+</div>
+</div>
+<div class="group flex items-center justify-between p-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface rounded-lg cursor-pointer transition-colors border-l-4 border-transparent">
+<span class="font-body-md text-body-md flex-1 truncate">Desserts</span>
+<div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-secondary p-1 rounded hover:bg-surface-variant transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+</div>
+</div>
+<div class="group flex items-center justify-between p-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface rounded-lg cursor-pointer transition-colors border-l-4 border-transparent">
+<span class="font-body-md text-body-md flex-1 truncate">Signature Cocktails</span>
+<div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-secondary p-1 rounded hover:bg-surface-variant transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Right Column: Dishes Grid -->
+<section class="lg:col-span-9 flex flex-col gap-md">
+<div class="flex justify-between items-center bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-variant">
+<h2 class="font-h2 text-h2 text-on-background">Starters &amp; Tapas</h2>
+<span class="bg-surface-container text-on-surface-variant font-label-caps text-label-caps px-3 py-1 rounded-full">8 Items</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-md">
+<!-- Dish Card 1 -->
+<article class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant overflow-hidden flex flex-col group hover:shadow-md transition-shadow">
+<div class="h-48 w-full relative bg-surface-container">
+<img alt="Truffle Arancini" class="w-full h-full object-cover" data-alt="Close up of golden fried arancini balls on a slate plate with drizzle of white truffle sauce, warm ambient restaurant lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApx_on9ywbaNrGTmmcu_r3aOtQkJekNpFvBOMl2BtpOEiaGKPiSymNda7o_JK1AlodiQ9puNptF_bxJz5nph0gUWGn8hmK7u994AUgGyxz4MWq_Pqj9zaAUlDeqi0lbBoA3914X4ztRKWsAAElNMaDBALE631F3zza88kgviNmDSh67wdj54rmYdYqyLZTigEAhYiqWbt-NfZF09IrcRDDYDRZr3jGRQEAX5I4pLUybhHVaJ2pmY8mFp-n_1j_mhWV-nN4amaDpCc"/>
+<div class="absolute top-sm right-sm bg-surface-container-lowest/90 backdrop-blur text-primary font-label-caps text-label-caps px-2 py-1 rounded-full shadow-sm flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-green-500"></span> Available
+                                </div>
+</div>
+<div class="p-md flex flex-col flex-1 gap-sm">
+<div class="flex justify-between items-start gap-2">
+<h3 class="font-h3 text-h3 text-on-surface line-clamp-1">Wild Mushroom Arancini</h3>
+<span class="font-h3 text-h3 text-primary">$14.00</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 text-sm flex-1">Crispy risotto balls stuffed with wild mushrooms and mozzarella, served with truffle aioli.</p>
+<div class="flex items-center gap-2 mt-2">
+<span class="bg-surface-container-low text-on-surface font-label-caps text-[10px] px-2 py-1 rounded-full">Vegetarian</span>
+</div>
+<div class="flex justify-end gap-2 pt-sm mt-sm border-t border-surface-variant">
+<button aria-label="Edit dish" class="p-2 text-secondary hover:text-primary hover:bg-primary-fixed rounded-full transition-colors min-w-[48px] min-h-[48px] flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button aria-label="Delete dish" class="p-2 text-secondary hover:text-error hover:bg-error-container rounded-full transition-colors min-w-[48px] min-h-[48px] flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Dish Card 2 -->
+<article class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant overflow-hidden flex flex-col group hover:shadow-md transition-shadow">
+<div class="h-48 w-full relative bg-surface-container">
+<img alt="Ceviche" class="w-full h-full object-cover" data-alt="Vibrant peruvian ceviche with chunks of white fish, red onion, sweet potato and cilantro in a shallow ceramic bowl, bright daylight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3rGAyH6AsGBKhQRM_Wnr7l9KAcZQSMjILvyRiTNfsoLvAEEcuXTpOz4WCkbPJQ5z762WxfCbmt3sFAvq_0jb1SYm6DlQ4Aybeu3W21HfiNBhTPiT8Ngy0EWQGrPlDj58gpVjdbphSrOIiEujz4MTqOHQux8w1UCnXtBAQ0BQ5tHtAWHB0202sJc485ZL5oVw7_5ep8PPuWUzEQXCJWHrIOxWrNYvFvgkgKAzX1zIk8j6qHJZawfgw17jIwzKQ9znGtURP2OPwfZs"/>
+<div class="absolute top-sm right-sm bg-surface-container-lowest/90 backdrop-blur text-primary font-label-caps text-label-caps px-2 py-1 rounded-full shadow-sm flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-green-500"></span> Available
+                                </div>
+</div>
+<div class="p-md flex flex-col flex-1 gap-sm">
+<div class="flex justify-between items-start gap-2">
+<h3 class="font-h3 text-h3 text-on-surface line-clamp-1">Classic Peruvian Ceviche</h3>
+<span class="font-h3 text-h3 text-primary">$18.00</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 text-sm flex-1">Fresh sea bass marinated in lime juice, aji amarillo, red onions, and cilantro.</p>
+<div class="flex items-center gap-2 mt-2">
+<span class="bg-surface-container-low text-on-surface font-label-caps text-[10px] px-2 py-1 rounded-full">Gluten-Free</span>
+<span class="bg-surface-container-low text-on-surface font-label-caps text-[10px] px-2 py-1 rounded-full">Spicy</span>
+</div>
+<div class="flex justify-end gap-2 pt-sm mt-sm border-t border-surface-variant">
+<button aria-label="Edit dish" class="p-2 text-secondary hover:text-primary hover:bg-primary-fixed rounded-full transition-colors min-w-[48px] min-h-[48px] flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button aria-label="Delete dish" class="p-2 text-secondary hover:text-error hover:bg-error-container rounded-full transition-colors min-w-[48px] min-h-[48px] flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Dish Card 3 (Sold Out) -->
+<article class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant overflow-hidden flex flex-col group hover:shadow-md transition-shadow opacity-75">
+<div class="h-48 w-full relative bg-surface-container grayscale-[50%]">
+<img alt="Wagyu Sliders" class="w-full h-full object-cover" data-alt="Two gourmet mini burgers on brioche buns with melted cheese on a dark wooden cutting board, rustic mood lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDl6DBExhO_YPZVAQHoWau_N-I2gGQ-7COxsE_kZV7IEvrqDL6bil_HJHWBZI0pwQrMk9eeZgLlZNtAVJV9k_CusurLZxXd99JEafTYK4R7xmjyRE38WjoY-PTXjVhY4sm5AE7rhusAnn7rHWqROKjz_SZBEdSUpxBHrxYxmrfZFLQK-lQ19h9Zl9Yp7h5Bsyxav5Tdua0qQp0p0L9myt3djmyepry7xsHDUjCtQk7iBhZjURPQJtKY48pe-Ixuds27k7XZOfukVkI"/>
+<div class="absolute top-sm right-sm bg-error-container/90 backdrop-blur text-on-error-container font-label-caps text-label-caps px-2 py-1 rounded-full shadow-sm flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-error"></span> Sold Out
+                                </div>
+</div>
+<div class="p-md flex flex-col flex-1 gap-sm">
+<div class="flex justify-between items-start gap-2">
+<h3 class="font-h3 text-h3 text-on-surface line-clamp-1">Wagyu Beef Sliders</h3>
+<span class="font-h3 text-h3 text-secondary">$22.00</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 text-sm flex-1">Two premium wagyu patties with caramelized onions and gruyere on brioche.</p>
+<div class="flex justify-end gap-2 pt-sm mt-sm border-t border-surface-variant">
+<button aria-label="Edit dish" class="p-2 text-secondary hover:text-primary hover:bg-primary-fixed rounded-full transition-colors min-w-[48px] min-h-[48px] flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button aria-label="Delete dish" class="p-2 text-secondary hover:text-error hover:bg-error-container rounded-full transition-colors min-w-[48px] min-h-[48px] flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+</article>
+</div>
+</section>
+</div>
+</main>
+</div>
+</body></html>

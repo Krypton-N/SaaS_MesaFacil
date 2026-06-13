@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Order Confirmation - MesaFácil</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#8e7164",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-container": "#581f00",
+                        "tertiary-fixed-dim": "#ffb595",
+                        "surface": "#f9f9f9",
+                        "secondary-container": "#e2dfde",
+                        "inverse-surface": "#2f3131",
+                        "on-primary-container": "#572000",
+                        "secondary": "#5f5e5e",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "on-background": "#1a1c1c",
+                        "tertiary-container": "#fd6c19",
+                        "on-surface-variant": "#5a4136",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-error": "#ffffff",
+                        "tertiary": "#a23f00",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "on-primary-fixed": "#351000",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#7c2e00",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "inverse-on-surface": "#f1f1f1",
+                        "on-secondary-fixed-variant": "#474746",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "primary-container": "#ff6b00",
+                        "outline-variant": "#e2bfb0",
+                        "surface-dim": "#dadada",
+                        "primary-fixed-dim": "#ffb693",
+                        "surface-variant": "#e2e2e2",
+                        "inverse-primary": "#ffb693",
+                        "surface-bright": "#f9f9f9",
+                        "secondary-fixed": "#e5e2e1",
+                        "surface-container-low": "#f3f3f3",
+                        "surface-container-high": "#e8e8e8",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-surface": "#1a1c1c",
+                        "surface-container": "#eeeeee",
+                        "primary-fixed": "#ffdbcc",
+                        "on-primary": "#ffffff",
+                        "background": "#f9f9f9",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-secondary-container": "#636262",
+                        "primary": "#a04100",
+                        "surface-tint": "#a04100"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "touch-target-min": "48px",
+                        "lg": "24px",
+                        "sm": "12px",
+                        "md": "16px",
+                        "base": "8px",
+                        "xl": "32px",
+                        "container-padding": "20px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "h3": ["Plus Jakarta Sans"],
+                        "button": ["Inter"],
+                        "h1": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h2": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "button": ["16px", { "lineHeight": "1", "fontWeight": "600" }],
+                        "h1": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col font-body-md">
+<!-- TopAppBar (Hidden Navigation Shell due to transactional intent) -->
+<!-- Navigation Drawer (Hidden) -->
+<!-- BottomNavBar (Hidden) -->
+<main class="flex-grow flex flex-col items-center justify-center p-container-padding">
+<div class="w-full max-w-md bg-surface-container-lowest rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.05)] p-xl relative overflow-hidden border border-outline-variant">
+<!-- Receipt Top Edge effect -->
+<div class="absolute top-0 left-0 w-full h-2 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHBvbHlnb24gcG9pbnRzPSIwLDAgMTAsMCA1LDUiIGZpbGw9IiNmOWY5ZjkiLz48L3N2Zz4=')] bg-repeat-x opacity-50"></div>
+<div class="flex flex-col items-center text-center mb-xl">
+<div class="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mb-md">
+<span class="material-symbols-outlined text-4xl text-green-500" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h1 class="font-h2 text-h2 text-on-surface mb-xs">Order Confirmed</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Your order is already in the kitchen</p>
+<div class="mt-md px-md py-base bg-surface-container rounded-lg">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Order #8492</span>
+</div>
+</div>
+<hr class="border-t border-dashed border-outline-variant mb-lg"/>
+<div class="space-y-md mb-lg">
+<div class="flex justify-between items-start">
+<div class="flex gap-md">
+<span class="font-body-md text-body-md text-on-surface font-semibold">2x</span>
+<div>
+<p class="font-body-md text-body-md text-on-surface">Truffle Burger</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-xs">Medium Rare, No Onions</p>
+</div>
+</div>
+<span class="font-body-md text-body-md text-on-surface">$48.00</span>
+</div>
+<div class="flex justify-between items-start">
+<div class="flex gap-md">
+<span class="font-body-md text-body-md text-on-surface font-semibold">1x</span>
+<div>
+<p class="font-body-md text-body-md text-on-surface">Sweet Potato Fries</p>
+</div>
+</div>
+<span class="font-body-md text-body-md text-on-surface">$8.50</span>
+</div>
+<div class="flex justify-between items-start">
+<div class="flex gap-md">
+<span class="font-body-md text-body-md text-on-surface font-semibold">2x</span>
+<div>
+<p class="font-body-md text-body-md text-on-surface">Artisan Cola</p>
+</div>
+</div>
+<span class="font-body-md text-body-md text-on-surface">$11.00</span>
+</div>
+</div>
+<hr class="border-t border-dashed border-outline-variant mb-lg"/>
+<div class="space-y-base mb-lg">
+<div class="flex justify-between">
+<span class="font-body-md text-body-md text-on-surface-variant">Subtotal</span>
+<span class="font-body-md text-body-md text-on-surface">$67.50</span>
+</div>
+<div class="flex justify-between">
+<span class="font-body-md text-body-md text-on-surface-variant">Tax</span>
+<span class="font-body-md text-body-md text-on-surface">$5.40</span>
+</div>
+<div class="flex justify-between pt-base border-t border-outline-variant">
+<span class="font-h3 text-h3 text-on-surface">Total</span>
+<span class="font-h3 text-h3 text-primary-container">$72.90</span>
+</div>
+</div>
+<div class="text-center pt-md">
+<p class="font-label-caps text-label-caps text-on-surface-variant">Table 12</p>
+</div>
+<!-- Receipt Bottom Edge effect -->
+<div class="absolute bottom-0 left-0 w-full h-2 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHBvbHlnb24gcG9pbnRzPSIwLDEwIDEwLDEwIDUsNSIgZmlsbD0iI2Y5ZjlmOSIvPjwvc3ZnPg==')] bg-repeat-x opacity-50"></div>
+</div>
+</main>
+</body></html>

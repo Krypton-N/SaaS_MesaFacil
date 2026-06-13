@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MesaFácil - Iniciar sesión</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#8e7164",
+                        "background": "#f9f9f9",
+                        "surface-variant": "#e2e2e2",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#5a4136",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "primary-fixed": "#ffdbcc",
+                        "surface-container-highest": "#e2e2e2",
+                        "inverse-primary": "#ffb693",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#351000",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#e5e2e1",
+                        "outline-variant": "#e2bfb0",
+                        "on-secondary-fixed-variant": "#474746",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#e2dfde",
+                        "on-background": "#1a1c1c",
+                        "inverse-on-surface": "#f1f1f1",
+                        "surface-container-high": "#e8e8e8",
+                        "on-surface": "#1a1c1c",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "surface-dim": "#dadada",
+                        "surface": "#f9f9f9",
+                        "primary": "#a04100",
+                        "on-tertiary-container": "#581f00",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "on-tertiary-fixed": "#360f00",
+                        "tertiary-fixed-dim": "#ffb595",
+                        "tertiary": "#a23f00",
+                        "surface-container-low": "#f3f3f3",
+                        "surface-bright": "#f9f9f9",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-tertiary-fixed-variant": "#7c2e00",
+                        "inverse-surface": "#2f3131",
+                        "tertiary-container": "#fd6c19",
+                        "surface-tint": "#a04100",
+                        "on-secondary-container": "#636262",
+                        "on-primary-container": "#572000",
+                        "secondary": "#5f5e5e",
+                        "primary-container": "#ff6b00",
+                        "surface-container": "#eeeeee",
+                        "primary-fixed-dim": "#ffb693",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "touch-target-min": "48px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "base": "8px",
+                        "xs": "4px",
+                        "sm": "12px",
+                        "xl": "32px",
+                        "container-padding": "20px"
+                    },
+                    "fontFamily": {
+                        "h3": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h1": ["Plus Jakarta Sans"],
+                        "button": ["Inter"],
+                        "h2": ["Plus Jakarta Sans"],
+                        "label-caps": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h1": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "button": ["16px", { "lineHeight": "1", "fontWeight": "600" }],
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col relative overflow-hidden">
+<!-- Atmospheric Background Image -->
+<div class="absolute inset-0 z-0 bg-cover bg-center opacity-30" data-alt="A softly blurred, cinematic background of a high-end, modern restaurant interior. Warm, ambient lighting illuminates sleek wooden tables and elegant bar settings. The mood is sophisticated, welcoming, and professional, using a warm color palette with deep earthy tones and soft golden highlights. The composition is deliberately out of focus to serve as a subtle, premium backdrop for a digital interface." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC8deJumg8_T7LlOKBh_bmfAzvGRv81adkN0IAR1pKKzeR2fMoV8KuEv5mfKcBulItvKUVr_Fo32YYXiirUXpDGTAsJm3G5yia5jxbL7NU6h_OSHZGD80FPdO2JD3TQYYI00tyeX7WK38tJtb5YgYuV0zHUlAYtit_DWVHqPIaZaf-YaHfTP-3pxPwvyhxdYThoC1RGeoLVm75LqFqLecf3-504Y-9gBw_87I-1-jJapjseG-5cq2mLE21Ch21kYZ246-9J_OjHJKA');"></div>
+<!-- Gradient Overlay for Contrast -->
+<div class="absolute inset-0 z-0 bg-gradient-to-b from-surface-bright/80 to-surface/95 backdrop-blur-sm"></div>
+<!-- Main Content Container -->
+<main class="relative z-10 flex-1 flex flex-col justify-center items-center p-container-padding w-full max-w-md mx-auto">
+<!-- Header / Logo -->
+<div class="text-center mb-xl w-full">
+<div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-container text-on-primary-container mb-sm shadow-sm ring-4 ring-surface-container-lowest">
+<span class="material-symbols-outlined text-[32px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">restaurant_menu</span>
+</div>
+<h1 class="font-h1 text-h1 text-primary tracking-tight">MesaFácil</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Restaurant Administration</p>
+</div>
+<!-- Login Form Card -->
+<div class="w-full bg-surface-container-lowest rounded-xl p-lg shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-surface-variant flex flex-col gap-lg">
+<form class="flex flex-col gap-md" onsubmit="event.preventDefault();">
+<!-- Email Field -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="email">Email</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-md text-on-surface-variant pointer-events-none">mail</span>
+<input class="w-full h-touch-target-min pl-12 pr-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md border border-outline/30 placeholder:text-outline focus:bg-surface-container-lowest focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none" id="email" name="email" placeholder="admin@restaurant.com" required="" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="flex flex-col gap-xs">
+<div class="flex justify-between items-center">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="password">Password</label>
+</div>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-md text-on-surface-variant pointer-events-none">lock</span>
+<input class="w-full h-touch-target-min pl-12 pr-md rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md border border-outline/30 placeholder:text-outline focus:bg-surface-container-lowest focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+<button class="absolute right-md text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center p-2 rounded-full" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility_off</span>
+</button>
+</div>
+</div>
+<!-- Remember Me & Forgot Password -->
+<div class="flex items-center justify-between mt-xs mb-sm">
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="w-5 h-5 rounded border-outline/50 text-primary focus:ring-primary/20 bg-surface-container-low cursor-pointer transition-colors" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface-variant group-hover:text-on-surface transition-colors">Remember me</span>
+</label>
+<a class="font-body-md text-[14px] text-primary hover:text-tertiary-container font-semibold transition-colors" href="#">Recover access</a>
+</div>
+<!-- Primary Action Button -->
+<button class="w-full h-touch-target-min rounded-xl bg-primary hover:bg-tertiary-container text-on-primary font-button text-button flex items-center justify-center gap-sm shadow-md shadow-primary/20 active:scale-[0.98] transition-all duration-200" type="submit">
+                    Iniciar sesión
+                    <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</form>
+</div>
+<!-- Footer subtly integrated -->
+<div class="mt-xl text-center">
+<p class="font-body-md text-[13px] text-on-surface-variant/80">Secure administration portal powered by MesaFácil</p>
+</div>
+</main>
+</body></html>
