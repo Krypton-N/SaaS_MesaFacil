@@ -23,6 +23,9 @@
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "src/**/*.test.ts",
+    "vitest.config.ts",
+    "vitest.setup.ts"
   ]
 }

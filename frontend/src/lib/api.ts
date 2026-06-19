@@ -6,26 +6,79 @@ interface ApiResponse<T = any> {
   error: string | null;
 }
 
+const TOKEN_KEY = 'mesafacil_token';
+const REFRESH_KEY = 'mesafacil_refresh_token';
+
 /**
- * Get the stored JWT token
+ * Get the stored access JWT token
  */
 function getToken(): string | null {
   if (typeof window === 'undefined') return null;
-  return localStorage.getItem('mesafacil_token');
+  return localStorage.getItem(TOKEN_KEY);
+}
+
+function getRefreshToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem(REFRESH_KEY);
 }
 
 /**
- * Store JWT token
+ * Store the access JWT token
  */
 export function setToken(token: string): void {
-  localStorage.setItem('mesafacil_token', token);
+  localStorage.setItem(TOKEN_KEY, token);
 }
 
 /**
- * Remove JWT token (logout)
+ * Store both the access token and the refresh token (used on login/register).
+ */
+export function setTokens(token: string, refreshToken?: string): void {
+  localStorage.setItem(TOKEN_KEY, token);
+  if (refreshToken) localStorage.setItem(REFRESH_KEY, refreshToken);
+}
+
+/**
+ * Remove all auth tokens (logout)
  */
 export function removeToken(): void {
-  localStorage.removeItem('mesafacil_token');
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(REFRESH_KEY);
+}
+
+/**
+ * Intenta renovar el access token usando el refresh token almacenado.
+ * Devuelve el nuevo access token, o null si no se pudo renovar.
+ * Se memoiza la promesa en curso para evitar múltiples refresh simultáneos.
+ */
+let refreshInFlight: Promise<string | null> | null = null;
+
+async function refreshAccessToken(): Promise<string | null> {
+  if (refreshInFlight) return refreshInFlight;
+
+  const refreshToken = getRefreshToken();
+  if (!refreshToken) return null;
+
+  refreshInFlight = (async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken }),
+      });
+      const data: ApiResponse<{ token: string; refreshToken: string }> = await response.json();
+      if (response.ok && data.success && data.data) {
+        setTokens(data.data.token, data.data.refreshToken);
+        return data.data.token;
+      }
+      return null;
+    } catch {
+      return null;
+    } finally {
+      refreshInFlight = null;
+    }
+  })();
+
+  return refreshInFlight;
 }
 
 /**
@@ -34,7 +87,8 @@ export function removeToken(): void {
  */
 async function request<T = any>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
+  isRetry = false
 ): Promise<ApiResponse<T>> {
   const token = getToken();
 
@@ -58,8 +112,17 @@ async function request<T = any>(
       headers,
     });
 
-    // Handle 401 — token expired or invalid
+    // Handle 401 — el access token expiró o es inválido
     if (response.status === 401) {
+      // Intentar renovar con el refresh token (una sola vez por petición)
+      if (!isRetry && endpoint !== '/auth/refresh') {
+        const newToken = await refreshAccessToken();
+        if (newToken) {
+          return request<T>(endpoint, options, true);
+        }
+      }
+
+      // Sin refresh válido → cerrar sesión
       removeToken();
       if (typeof window !== 'undefined') {
         window.location.href = '/login';

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { api, setToken } from '@/lib/api';
+import { api, setTokens } from '@/lib/api';
 import { Button, Input } from '@/components/ui';
 
 export default function LoginPage() {
@@ -27,7 +27,7 @@ export default function LoginPage() {
     try {
       const res = await api.post('/auth/login', { email, password });
       if (res.success && res.data?.token) {
-        setToken(res.data.token);
+        setTokens(res.data.token, res.data.refreshToken);
         router.push('/dashboard');
       } else {
         setError(res.error || 'Credenciales incorrectas');

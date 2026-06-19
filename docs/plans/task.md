@@ -2,7 +2,7 @@
 
 ## Fase 0: Estructura del Monorepo
 - [x] Crear estructura de carpetas + `.gitignore` + `.env.example` + `README.md`
-- [ ] Crear cuenta Supabase + proyecto (manual por el usuario)
+- [x] Crear cuenta Supabase + proyecto (BD en la nube ya creada y poblada)
 
 ## Fase 1: Backend (Express + TypeScript)
 - [x] Init backend: `npm init`, instalar deps, configurar TypeScript
@@ -10,23 +10,44 @@
 - [x] Scaffold Express: entry point, middlewares, response wrapper, health
 - [x] Middleware JWT + role guards
 - [x] Mock payment service
-- [x] Scaffold de rutas (auth, users, categories, dishes, tables, orders, reservations)
-- [ ] Seed de datos de prueba
+- [x] Rutas (auth, users, categories, dishes, tables, orders, reservations)
+- [x] Seed de datos de prueba (`npm run seed`)
 
-## Fase 2: Frontend (Next.js + PWA)
-- [/] Init frontend: `create-next-app` con TS + Tailwind (instalando...)
-- [ ] Configurar Tailwind con design tokens Gourmet Flux
-- [ ] `globals.css`: variables CSS, sombras, animaciones
-- [ ] Root layout + Google Fonts + PWA manifest + icons
+## Fase 2: Frontend (Next.js 16 + PWA)
+- [x] Init frontend: `create-next-app` con TS + Tailwind
+- [x] Configurar Tailwind con design tokens Gourmet Flux
+- [x] `globals.css`: variables CSS, sombras, animaciones
+- [x] Root layout + Google Fonts + PWA manifest + icons
 
 ## Fase 3: Componentes UI Base
-- [ ] Componentes UI base (Button, Card, Input, Chip, Badge, QuantitySelector)
-- [ ] Admin Layout: SideNavBar + TopAppBar
-- [ ] Cliente Layout: TopAppBar + BottomNavBar
+- [x] Componentes UI base (Button, Card, Input, Chip, Badge, QuantitySelector)
+- [x] Admin Layout: SideNavBar + TopAppBar
+- [x] Cliente Layout: TopAppBar + BottomNavBar
 
-## Fase 4: Scaffolding de Páginas
-- [ ] Scaffold de páginas vacías con layouts correctos
-- [ ] `api.ts` (cliente HTTP) + `socket.ts` + `supabase.ts`
+## Fase 4: Páginas y librerías
+- [x] Páginas: dashboard, menú, mesas, meseros, reservas, login, PWA cliente, cocina, mesero
+- [x] `api.ts` (cliente HTTP) + `socket.ts` + `supabase.ts`
 
-## Fase 5: Verificación
-- [ ] Verificar: backend arranca, DB conecta, frontend corre, comunicación OK
+## Fase 5: Verificación de bases
+- [x] Backend arranca, DB conecta, frontend corre, comunicación OK
+
+---
+
+## Fase 6: Cierre de la aplicación web (completado)
+- [x] **IA / VLM real con LM Studio** — `vlm.service.ts` + endpoint `POST /dishes/extract-from-image`
+      conectado a la API de LM Studio; el escáner del admin sube la foto y muestra los platillos detectados
+- [x] **Dashboard "Reservas Hoy" real** — se elimina el valor hardcodeado; ahora consulta
+      `GET /reservations?date=hoy` (excluye canceladas)
+- [x] **Pruebas automatizadas (Vitest)** — 18 tests: `payment.service`, `parseVlmResponse`,
+      transición de estados de orden y paginación. Ejecutar con `npm test` (en `backend/`)
+- [x] **PWA completa** — `public/sw.js` (caché offline del app shell + push) + registro vía
+      `ServiceWorkerRegister` + headers del SW en `next.config.ts`
+- [x] **Refresh token** — `POST /auth/refresh`, tokens de acceso + refresh emitidos en login/registro,
+      renovación automática transparente desde `api.ts` ante un 401
+- [x] **Paginación** — opt-in (`?limit=&offset=`) en `GET /orders`, `/dishes` y `/reservations`,
+      con metadatos `meta: { total, limit, offset }` (no rompe a los consumidores actuales)
+
+## Limitaciones conocidas restantes (fuera de alcance de esta iteración)
+- [ ] Pago real con OpenPay (sigue siendo mock por diseño del proyecto académico)
+- [ ] Optimizar consultas N+1 en algunos listados (orders, menú)
+- [ ] Tests de integración con BD (los actuales son unitarios de lógica de negocio)

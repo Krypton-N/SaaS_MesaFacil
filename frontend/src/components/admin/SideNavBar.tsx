@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { removeToken } from '@/lib/api';
 
 const navItems = [
   { href: '/dashboard', icon: 'dashboard', label: 'Dashboard' },
@@ -14,6 +15,12 @@ const navItems = [
 
 export function SideNavBar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    removeToken();
+    router.replace('/login');
+  };
 
   return (
     <nav className="fixed left-0 top-0 h-screen w-64 border-r border-surface-variant bg-surface-container-lowest shadow-sm flex flex-col p-4 z-50">
@@ -60,7 +67,10 @@ export function SideNavBar() {
 
       {/* Bottom: Logout */}
       <div className="mt-auto pt-4 border-t border-surface-variant">
-        <button className="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-error-container hover:text-on-error-container w-full transition-colors">
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-error-container hover:text-on-error-container w-full transition-colors"
+        >
           <span className="material-symbols-outlined">logout</span>
           Cerrar sesión
         </button>

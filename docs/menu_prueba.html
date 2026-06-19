@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Menú de prueba — La Terraza</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; background: #fffdf7; color: #2a2118; margin: 0; padding: 48px; }
+  .menu { max-width: 720px; margin: 0 auto; background: #fff; border: 2px solid #e0c089; border-radius: 12px; padding: 48px 56px; }
+  h1 { text-align: center; font-size: 40px; letter-spacing: 2px; margin: 0; }
+  .sub { text-align: center; color: #a07a2c; letter-spacing: 4px; text-transform: uppercase; font-size: 13px; margin: 6px 0 32px; }
+  h2 { font-size: 22px; border-bottom: 2px solid #e0c089; padding-bottom: 6px; margin: 30px 0 14px; color: #7a5c1e; }
+  .item { display: flex; justify-content: space-between; align-items: baseline; margin: 12px 0; }
+  .item .name { font-weight: bold; font-size: 18px; }
+  .item .desc { display: block; font-size: 14px; color: #6b5d48; font-style: italic; font-weight: normal; }
+  .item .price { font-weight: bold; font-size: 18px; white-space: nowrap; padding-left: 16px; }
+  .dots { flex: 1; border-bottom: 1px dotted #bbb; margin: 0 8px; transform: translateY(-4px); }
+</style>
+</head>
+<body>
+  <div class="menu">
+    <h1>La Terraza</h1>
+    <div class="sub">Cocina Mexicana · Menú de la Casa</div>
+
+    <h2>Entradas</h2>
+    <div class="item"><span class="name">Guacamole tradicional<span class="desc">Aguacate, jitomate, cebolla y totopos recién fritos</span></span><span class="dots"></span><span class="price">$95</span></div>
+    <div class="item"><span class="name">Sopa de tortilla<span class="desc">Caldo de jitomate, tiras de tortilla, aguacate y queso</span></span><span class="dots"></span><span class="price">$85</span></div>
+    <div class="item"><span class="name">Queso fundido con chorizo<span class="desc">Queso Oaxaca gratinado con chorizo y tortillas de harina</span></span><span class="dots"></span><span class="price">$110</span></div>
+
+    <h2>Platos Fuertes</h2>
+    <div class="item"><span class="name">Tacos al pastor<span class="desc">Orden de 4 tacos con piña, cebolla y cilantro</span></span><span class="dots"></span><span class="price">$135</span></div>
+    <div class="item"><span class="name">Enchiladas verdes<span class="desc">Rellenas de pollo, bañadas en salsa verde y crema</span></span><span class="dots"></span><span class="price">$145</span></div>
+    <div class="item"><span class="name">Arrachera a la parrilla<span class="desc">300g con frijoles charros, guacamole y tortillas</span></span><span class="dots"></span><span class="price">$245</span></div>
+
+    <h2>Bebidas</h2>
+    <div class="item"><span class="name">Agua de horchata<span class="desc">Vaso de 500 ml</span></span><span class="dots"></span><span class="price">$40</span></div>
+    <div class="item"><span class="name">Limonada mineral<span class="desc">Con hierbabuena</span></span><span class="dots"></span><span class="price">$45</span></div>
+
+    <h2>Postres</h2>
+    <div class="item"><span class="name">Flan napolitano<span class="desc">Casero, con caramelo</span></span><span class="dots"></span><span class="price">$65</span></div>
+    <div class="item"><span class="name">Churros con cajeta<span class="desc">Orden de 5 piezas espolvoreadas con azúcar y canela</span></span><span class="dots"></span><span class="price">$70</span></div>
+  </div>
+</body>
+</html>

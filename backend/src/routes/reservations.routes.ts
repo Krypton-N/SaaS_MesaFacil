@@ -4,6 +4,7 @@ import { query } from '../config/database';
 import { authenticate } from '../middleware/auth';
 import { requireRole } from '../middleware/roleGuard';
 import { validate } from '../middleware/validate';
+import { getPagination } from '../utils/pagination';
 
 const router = Router();
 
@@ -53,8 +54,24 @@ router.get('/', async (req: Request, res: Response) => {
     }
 
     sql += ' ORDER BY r.datetime ASC';
+
+    // Paginación opt-in
+    const { limit, offset } = getPagination(req.query as Record<string, unknown>);
+    let total = 0;
+    if (limit !== null) {
+      const countResult = await query(`SELECT COUNT(*)::int AS total FROM (${sql}) AS sub`, params);
+      total = countResult.rows[0]?.total ?? 0;
+      sql += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+      params.push(limit, offset);
+    }
+
     const result = await query(sql, params);
-    res.json({ success: true, data: result.rows, error: null });
+    res.json({
+      success: true,
+      data: result.rows,
+      error: null,
+      ...(limit !== null && { meta: { total, limit, offset } }),
+    });
   } catch (err) {
     res.status(500).json({ success: false, data: null, error: 'Error al obtener reservas' });
   }

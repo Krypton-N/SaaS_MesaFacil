@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { query } from '../config/database';
-import { authenticate, generateToken } from '../middleware/auth';
+import { authenticate, generateToken, generateRefreshToken, verifyRefreshToken } from '../middleware/auth';
 import { validate } from '../middleware/validate';
 
 const router = Router();
@@ -51,15 +51,17 @@ router.post('/register', validate(registerSchema), async (req: Request, res: Res
     const userResult = await query('SELECT id, role FROM users WHERE email = $1', [email]);
     const user = userResult.rows[0];
 
-    const token = generateToken({
+    const tokenPayload = {
       userId: user.id,
       restaurantId: restaurant.id,
       role: user.role,
-    });
+    };
+    const token = generateToken(tokenPayload);
+    const refreshToken = generateRefreshToken(tokenPayload);
 
     res.status(201).json({
       success: true,
-      data: { token, restaurant: { id: restaurant.id, name: restaurant.name } },
+      data: { token, refreshToken, restaurant: { id: restaurant.id, name: restaurant.name } },
       error: null,
     });
   } catch (err) {
@@ -92,16 +94,19 @@ router.post('/login', validate(loginSchema), async (req: Request, res: Response)
       return;
     }
 
-    const token = generateToken({
+    const tokenPayload = {
       userId: user.id,
       restaurantId: user.restaurant_id,
       role: user.role,
-    });
+    };
+    const token = generateToken(tokenPayload);
+    const refreshToken = generateRefreshToken(tokenPayload);
 
     res.json({
       success: true,
       data: {
         token,
+        refreshToken,
         user: { id: user.id, name: user.name, role: user.role },
       },
       error: null,
@@ -109,6 +114,34 @@ router.post('/login', validate(loginSchema), async (req: Request, res: Response)
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ success: false, data: null, error: 'Error al iniciar sesión' });
+  }
+});
+
+// ---- POST /auth/refresh ----
+const refreshSchema = z.object({
+  refreshToken: z.string().min(1),
+});
+
+router.post('/refresh', validate(refreshSchema), async (req: Request, res: Response) => {
+  try {
+    const { refreshToken } = req.body;
+    const payload = verifyRefreshToken(refreshToken);
+
+    // Emitimos un nuevo access token (y rotamos el refresh token).
+    const token = generateToken(payload);
+    const newRefreshToken = generateRefreshToken(payload);
+
+    res.json({
+      success: true,
+      data: { token, refreshToken: newRefreshToken },
+      error: null,
+    });
+  } catch {
+    res.status(401).json({
+      success: false,
+      data: null,
+      error: 'Refresh token inválido o expirado',
+    });
   }
 });
 

@@ -4,6 +4,9 @@ import { query } from '../config/database';
 import { authenticate } from '../middleware/auth';
 import { requireRole } from '../middleware/roleGuard';
 import { validate } from '../middleware/validate';
+import { env } from '../config/env';
+import { extractDishesFromImage } from '../services/vlm.service';
+import { getPagination } from '../utils/pagination';
 
 const router = Router();
 
@@ -40,8 +43,27 @@ router.get('/', authenticate, requireRole('admin'), async (req: Request, res: Re
     }
 
     sql += ' ORDER BY c.sort_order, d.name';
+
+    // Paginación opt-in (no rompe al frontend: data sigue siendo arreglo)
+    const { limit, offset } = getPagination(req.query as Record<string, unknown>);
+    let total = 0;
+    if (limit !== null) {
+      const countResult = await query(
+        `SELECT COUNT(*)::int AS total FROM (${sql}) AS sub`,
+        params
+      );
+      total = countResult.rows[0]?.total ?? 0;
+      sql += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+      params.push(limit, offset);
+    }
+
     const result = await query(sql, params);
-    res.json({ success: true, data: result.rows, error: null });
+    res.json({
+      success: true,
+      data: result.rows,
+      error: null,
+      ...(limit !== null && { meta: { total, limit, offset } }),
+    });
   } catch (err) {
     res.status(500).json({ success: false, data: null, error: 'Error al obtener platillos' });
   }
@@ -138,18 +160,41 @@ router.delete('/:id', authenticate, requireRole('admin'), async (req: Request, r
 });
 
 // ---- POST /dishes/extract-from-image (VLM / LM Studio) ----
+const extractImageSchema = z.object({
+  image: z.string().min(1, 'La imagen del menú es requerida'),
+});
+
 router.post('/extract-from-image', authenticate, requireRole('admin'), async (req: Request, res: Response) => {
-  // TODO: Integrate with LM Studio VLM in a later sprint
-  res.json({
-    success: true,
-    data: {
-      extracted_dishes: [
-        { name: 'Platillo detectado (demo)', description: 'Extraído por IA', price: 0, suggested_category: 'Sin categoría' },
-      ],
-      message: 'Endpoint de extracción con IA — pendiente de integración con LM Studio',
-    },
-    error: null,
-  });
+  const parsed = extractImageSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({
+      success: false,
+      data: null,
+      error: 'Debes enviar la imagen del menú (campo "image" como data URL base64)',
+    });
+    return;
+  }
+
+  try {
+    const dishes = await extractDishesFromImage(parsed.data.image);
+    res.json({
+      success: true,
+      data: {
+        extracted_dishes: dishes,
+        message: dishes.length > 0
+          ? `Se detectaron ${dishes.length} platillo(s) en la imagen`
+          : 'La IA no detectó platillos legibles en la imagen',
+      },
+      error: null,
+    });
+  } catch (err) {
+    console.error('VLM extract error:', err);
+    res.status(502).json({
+      success: false,
+      data: null,
+      error: `No se pudo conectar con el servicio de IA (LM Studio en ${env.LM_STUDIO_URL}). Verifica que esté en ejecución con un modelo de visión cargado.`,
+    });
+  }
 });
 
 export default router;

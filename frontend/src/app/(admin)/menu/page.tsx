@@ -44,6 +44,9 @@ export default function MenuPage() {
   const [showAIScanner, setShowAIScanner] = useState(false);
   const [scanningImage, setScanningImage] = useState(false);
   const [extractedDishes, setExtractedDishes] = useState<any[]>([]);
+  const [scanFile, setScanFile] = useState<File | null>(null);
+  const [scanPreview, setScanPreview] = useState<string | null>(null);
+  const [scanError, setScanError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchCategories();
@@ -157,15 +160,55 @@ export default function MenuPage() {
     }
   };
 
+  // Lee un File como data URL (base64) para enviarlo al backend / VLM
+  const fileToDataUrl = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+  const handleScanFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setScanFile(file);
+      setScanPreview(URL.createObjectURL(file));
+      setScanError(null);
+      setExtractedDishes([]);
+    }
+  };
+
+  const closeAIScanner = () => {
+    setShowAIScanner(false);
+    setExtractedDishes([]);
+    setScanFile(null);
+    setScanPreview(null);
+    setScanError(null);
+  };
+
   const handleAIScan = async () => {
+    if (!scanFile) {
+      setScanError('Primero selecciona una foto del menú.');
+      return;
+    }
     setScanningImage(true);
+    setScanError(null);
     try {
-      const res = await api.post('/dishes/extract-from-image');
+      const dataUrl = await fileToDataUrl(scanFile);
+      const res = await api.post('/dishes/extract-from-image', { image: dataUrl });
       if (res.success && res.data) {
-        setExtractedDishes(res.data.extracted_dishes);
+        const detected = res.data.extracted_dishes || [];
+        setExtractedDishes(detected);
+        if (detected.length === 0) {
+          setScanError(res.data.message || 'La IA no detectó platillos en la imagen.');
+        }
+      } else {
+        setScanError(res.error || 'No se pudo procesar la imagen con la IA.');
       }
     } catch (err) {
       console.error(err);
+      setScanError('Error de conexión con el servidor.');
     } finally {
       setScanningImage(false);
     }
@@ -446,10 +489,7 @@ export default function MenuPage() {
                 <h3 className="text-xl font-extrabold tracking-tight font-heading">Escáner de Menús con VLM Inteligente</h3>
               </div>
               <button
-                onClick={() => {
-                  setShowAIScanner(false);
-                  setExtractedDishes([]);
-                }}
+                onClick={closeAIScanner}
                 className="w-10 h-10 rounded-full flex items-center justify-center text-secondary hover:bg-surface-container-low"
               >
                 <span className="material-symbols-outlined">close</span>
@@ -460,20 +500,45 @@ export default function MenuPage() {
               Sube una foto de tu menú impreso y la Inteligencia Artificial (hospedada localmente en LM Studio) se encargará de extraer automáticamente todos los nombres, descripciones y precios sugeridos.
             </p>
 
+            {scanError && (
+              <div className="p-3 bg-error-container text-on-error-container text-sm font-semibold rounded-xl flex items-center gap-2 border border-error/20">
+                <span className="material-symbols-outlined text-lg">error</span>
+                <span>{scanError}</span>
+              </div>
+            )}
+
             {extractedDishes.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed border-surface-variant rounded-2xl bg-surface-container-low/50">
-                <span className="material-symbols-outlined text-secondary text-5xl mb-2">upload_file</span>
-                <p className="text-on-surface font-bold">Arrastra la imagen del menú aquí</p>
+              <label
+                htmlFor="vlm-menu-upload"
+                className="flex flex-col items-center justify-center py-10 border-2 border-dashed border-surface-variant rounded-2xl bg-surface-container-low/50 cursor-pointer hover:border-primary transition-colors"
+              >
+                {scanPreview ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={scanPreview} alt="Vista previa del menú" className="max-h-48 rounded-xl object-contain mb-3" />
+                ) : (
+                  <span className="material-symbols-outlined text-secondary text-5xl mb-2">upload_file</span>
+                )}
+                <p className="text-on-surface font-bold">
+                  {scanFile ? scanFile.name : 'Haz clic para subir la imagen del menú'}
+                </p>
                 <p className="text-secondary text-xs mt-1">Formatos permitidos: JPG, PNG</p>
+                <input
+                  id="vlm-menu-upload"
+                  type="file"
+                  accept="image/png, image/jpeg"
+                  className="hidden"
+                  onChange={handleScanFileChange}
+                />
                 <Button
                   className="mt-5"
-                  onClick={handleAIScan}
+                  onClick={(e) => { e.preventDefault(); handleAIScan(); }}
                   loading={scanningImage}
+                  disabled={!scanFile}
                   icon="bolt"
                 >
-                  Simular Escaneo VLM IA
+                  {scanningImage ? 'Analizando con IA…' : 'Escanear menú con IA'}
                 </Button>
-              </div>
+              </label>
             ) : (
               <div className="flex flex-col gap-4 overflow-y-auto pr-2 no-scrollbar max-h-[400px]">
                 <h4 className="font-extrabold font-heading text-sm text-secondary uppercase tracking-wider">Platillos Detectados ({extractedDishes.length})</h4>
@@ -492,8 +557,7 @@ export default function MenuPage() {
                           setDishDesc(dish.description);
                           setDishPrice(String(dish.price || ''));
                           setShowAddDish(true);
-                          setShowAIScanner(false);
-                          setExtractedDishes([]);
+                          closeAIScanner();
                         }}>Agregar</Button>
                       </div>
                     </Card>

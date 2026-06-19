@@ -38,9 +38,16 @@ export default function DashboardPage() {
 
   const fetchDashboardData = async () => {
     try {
-      const res = await api.get<Order[]>('/orders');
-      if (res.success && res.data) {
-        const fetchedOrders = res.data;
+      // Fecha de hoy (local) en formato YYYY-MM-DD para filtrar reservas
+      const today = new Date().toLocaleDateString('en-CA');
+
+      const [ordersRes, reservationsRes] = await Promise.all([
+        api.get<Order[]>('/orders'),
+        api.get<Array<{ status: string }>>(`/reservations?date=${today}`),
+      ]);
+
+      if (ordersRes.success && ordersRes.data) {
+        const fetchedOrders = ordersRes.data;
         setOrders(fetchedOrders);
 
         // Calculate simple metrics for today
@@ -48,10 +55,15 @@ export default function DashboardPage() {
         const activeOrders = fetchedOrders.filter(o => o.status === 'paid' || o.status === 'ready').length;
         const avg = fetchedOrders.length > 0 ? totalSales / fetchedOrders.length : 0;
 
+        // Reservas reales de hoy (excluyendo las canceladas)
+        const reservationsToday = reservationsRes.success && reservationsRes.data
+          ? reservationsRes.data.filter(r => r.status !== 'cancelled').length
+          : 0;
+
         setStats({
           salesToday: totalSales,
           activeOrdersCount: activeOrders,
-          reservationsToday: 3, // Mock reservation number for school demonstration
+          reservationsToday,
           avgTicket: avg,
         });
       }
