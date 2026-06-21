@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { getSocket } from '@/lib/socket';
+import { connectToRestaurant } from '@/lib/socket';
 import { api } from '@/lib/api';
+import { playAlertBeep, unlockAudio, isAudioUnlocked } from '@/lib/sound';
 import { Card, Chip, Button } from '@/components/ui';
 
 interface ReadyOrder {
@@ -16,17 +17,30 @@ export default function WaiterPage() {
   const [restaurantId, setRestaurantId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [alertOrder, setAlertOrder] = useState<ReadyOrder | null>(null);
+  const [soundOn, setSoundOn] = useState(false);
 
-  // Audio alert bell
-  const playBellAlert = () => {
-    try {
-      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2047/2047-84.wav');
-      audio.volume = 0.6;
-      audio.play();
-    } catch (err) {
-      console.log('Audio bell alert failed to play', err);
-    }
+  const enableSound = () => {
+    unlockAudio();
+    setSoundOn(isAudioUnlocked());
   };
+
+  const playBellAlert = () => playAlertBeep();
+
+  // Browsers block audio until the user interacts with the page. Unlock on the
+  // first interaction anywhere so the waiter doesn't have to click a button.
+  useEffect(() => {
+    const handler = () => {
+      enableSound();
+      window.removeEventListener('pointerdown', handler);
+      window.removeEventListener('keydown', handler);
+    };
+    window.addEventListener('pointerdown', handler);
+    window.addEventListener('keydown', handler);
+    return () => {
+      window.removeEventListener('pointerdown', handler);
+      window.removeEventListener('keydown', handler);
+    };
+  }, []);
 
   useEffect(() => {
     // Read user token to extract restaurantId
@@ -67,9 +81,9 @@ export default function WaiterPage() {
 
     if (!restaurantId) return;
 
-    // Connect to Socket
-    const socket = getSocket();
-    socket.emit('join:restaurant', restaurantId);
+    // Connect to Socket (autoConnect is disabled, so this opens the connection
+    // AND joins the restaurant room — getSocket() alone never connects)
+    const socket = connectToRestaurant(restaurantId);
 
     // Listen for kitchen completion alerts
     socket.on('order:ready', (data: any) => {
@@ -128,7 +142,18 @@ export default function WaiterPage() {
           </div>
         </div>
 
-        <Chip variant="success" className="text-[10px] py-1">En Línea</Chip>
+        <div className="flex items-center gap-2">
+          {!soundOn && (
+            <button
+              onClick={enableSound}
+              className="flex items-center gap-1 bg-primary-container text-on-primary px-2.5 py-1 rounded-lg text-[10px] font-bold active:scale-95"
+            >
+              <span className="material-symbols-outlined text-sm">notifications_active</span>
+              Sonido
+            </button>
+          )}
+          <Chip variant="success" className="text-[10px] py-1">En Línea</Chip>
+        </div>
       </header>
 
       {/* Main waiter board */}

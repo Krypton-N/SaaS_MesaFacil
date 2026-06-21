@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { api } from '@/lib/api';
+import { connectToRestaurant } from '@/lib/socket';
 import { Card, Chip, Button } from '@/components/ui';
 
 interface DashboardStats {
@@ -35,6 +36,9 @@ export default function DashboardPage() {
   });
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Ref para que el listener del socket siempre llame a la última versión
+  const fetchRef = useRef<() => void>(() => {});
 
   const fetchDashboardData = async () => {
     try {
@@ -74,11 +78,38 @@ export default function DashboardPage() {
     }
   };
 
+  fetchRef.current = fetchDashboardData;
+
   useEffect(() => {
     fetchDashboardData();
-    // Auto refresh every 30 seconds
-    const interval = setInterval(fetchDashboardData, 30000);
+    // Auto refresh every 30 seconds (red de seguridad por si se pierde un evento)
+    const interval = setInterval(() => fetchRef.current(), 30000);
     return () => clearInterval(interval);
+  }, []);
+
+  // Actualización en tiempo real vía Socket.io
+  useEffect(() => {
+    const token = localStorage.getItem('mesafacil_token');
+    if (!token) return;
+
+    let restaurantId: number;
+    try {
+      restaurantId = JSON.parse(atob(token.split('.')[1])).restaurantId;
+    } catch {
+      return;
+    }
+
+    const socket = connectToRestaurant(restaurantId);
+    const refresh = () => fetchRef.current();
+
+    // Nuevo pedido pagado, o cualquier cambio de estado (ready/delivered)
+    socket.on('order:new', refresh);
+    socket.on('order:status', refresh);
+
+    return () => {
+      socket.off('order:new', refresh);
+      socket.off('order:status', refresh);
+    };
   }, []);
 
   const handleUpdateStatus = async (orderId: number, currentStatus: string) => {

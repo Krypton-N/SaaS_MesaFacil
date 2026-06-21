@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { compressImage } from './image';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -21,13 +22,17 @@ export async function uploadDishImage(file: File): Promise<string | null> {
     return null;
   }
 
-  const ext = file.name.split('.').pop();
+  // Optimiza (redimensiona + WebP) antes de subir: archivos ligeros sin que el
+  // dueño tenga que preparar la foto. Si falla, compressImage devuelve el original.
+  const optimized = await compressImage(file);
+
+  const ext = optimized.name.split('.').pop() || 'webp';
   const filename = `dish_${Date.now()}.${ext}`;
 
   const { data, error } = await supabase.storage
     .from('dish-images')
-    .upload(filename, file, {
-      contentType: file.type,
+    .upload(filename, optimized, {
+      contentType: optimized.type,
       upsert: true,
     });
 

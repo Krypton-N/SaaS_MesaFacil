@@ -160,17 +160,27 @@ router.patch('/:id/status', authenticate, requireRole('admin', 'waiter'), valida
 
     await query('UPDATE orders SET status = $1 WHERE id = $2', [status, orderId]);
 
-    // Emit Socket.io event when order is ready
-    if (status === 'ready') {
-      const io = req.app.get('io');
-      if (io) {
+    const io = req.app.get('io');
+    if (io) {
+      const room = `restaurant:${order.restaurant_id}`;
+
+      // Evento genérico en CADA transición — lo consume el dashboard para
+      // mantener en vivo el conteo de pedidos activos (incl. delivered).
+      io.to(room).emit('order:status', {
+        order_id: parseInt(orderId as string),
+        status,
+        table_number: order.table_number,
+      });
+
+      // Evento específico para la alerta del mesero cuando el platillo está listo
+      if (status === 'ready') {
         const itemsResult = await query(
           `SELECT d.name as dish_name, oi.quantity FROM order_items oi
            JOIN dishes d ON oi.dish_id = d.id WHERE oi.order_id = $1`,
           [orderId]
         );
 
-        io.to(`restaurant:${order.restaurant_id}`).emit('order:ready', {
+        io.to(room).emit('order:ready', {
           order_id: parseInt(orderId as string),
           table_number: order.table_number,
           table_id: order.table_id,
@@ -189,54 +199,57 @@ router.patch('/:id/status', authenticate, requireRole('admin', 'waiter'), valida
 router.get('/', authenticate, requireRole('admin'), async (req: Request, res: Response) => {
   try {
     const { status, table_id, date } = req.query;
-    let sql = `
-      SELECT o.id as order_id, t.number as table_number, o.status, o.total, o.created_at
-      FROM orders o
-      JOIN tables t ON o.table_id = t.id
-      WHERE t.restaurant_id = $1
-    `;
+
+    // WHERE compartido por la consulta de conteo y la de datos
     const params: any[] = [req.user!.restaurantId];
+    let where = ' WHERE t.restaurant_id = $1';
     let paramIndex = 2;
 
     if (status) {
-      sql += ` AND o.status = $${paramIndex++}`;
+      where += ` AND o.status = $${paramIndex++}`;
       params.push(status);
     }
     if (table_id) {
-      sql += ` AND o.table_id = $${paramIndex++}`;
+      where += ` AND o.table_id = $${paramIndex++}`;
       params.push(table_id);
     }
     if (date) {
-      sql += ` AND DATE(o.created_at) = $${paramIndex++}`;
+      where += ` AND DATE(o.created_at) = $${paramIndex++}`;
       params.push(date);
     }
 
-    sql += ' ORDER BY o.created_at DESC';
+    const fromClause = ` FROM orders o JOIN tables t ON o.table_id = t.id${where}`;
+
+    // Una sola consulta: los items se agregan con json_agg (sin N+1)
+    let sql = `
+      SELECT o.id as order_id, t.number as table_number, o.status, o.total, o.created_at,
+        COALESCE((
+          SELECT json_agg(json_build_object(
+            'dish_id', oi.dish_id,
+            'name', d.name,
+            'quantity', oi.quantity,
+            'note', oi.note,
+            'subtotal', oi.subtotal
+          ))
+          FROM order_items oi JOIN dishes d ON oi.dish_id = d.id
+          WHERE oi.order_id = o.id
+        ), '[]'::json) AS items
+      ${fromClause}
+      ORDER BY o.created_at DESC
+    `;
 
     // Paginación opt-in (data sigue siendo arreglo; meta se agrega si hay limit)
     const { limit, offset } = getPagination(req.query as Record<string, unknown>);
     let total = 0;
     if (limit !== null) {
-      const countResult = await query(`SELECT COUNT(*)::int AS total FROM (${sql}) AS sub`, params);
+      const countResult = await query(`SELECT COUNT(*)::int AS total${fromClause}`, params);
       total = countResult.rows[0]?.total ?? 0;
       sql += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
       params.push(limit, offset);
     }
 
     const result = await query(sql, params);
-
-    // Get items for each order
-    const orders = await Promise.all(
-      result.rows.map(async (order) => {
-        const itemsResult = await query(
-          `SELECT oi.dish_id, d.name, oi.quantity, oi.note, oi.subtotal
-           FROM order_items oi JOIN dishes d ON oi.dish_id = d.id
-           WHERE oi.order_id = $1`,
-          [order.order_id]
-        );
-        return { ...order, items: itemsResult.rows };
-      })
-    );
+    const orders = result.rows;
 
     res.json({
       success: true,
@@ -245,6 +258,7 @@ router.get('/', authenticate, requireRole('admin'), async (req: Request, res: Re
       ...(limit !== null && { meta: { total, limit, offset } }),
     });
   } catch (err) {
+    console.error('Get orders error:', err);
     res.status(500).json({ success: false, data: null, error: 'Error al obtener órdenes' });
   }
 });

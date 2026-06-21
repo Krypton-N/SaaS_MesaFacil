@@ -21,6 +21,18 @@ interface Dish {
   active: boolean;
 }
 
+// Fila editable del escáner IA: el usuario marca cuáles conservar, corrige
+// nombre/precio y elige la categoría destino antes de insertar en lote.
+interface ExtractedRow {
+  name: string;
+  description: string;
+  price: string;
+  suggested_category: string;
+  selected: boolean;
+  // String(categoryId) para una categoría existente, o `new:<Nombre>` para crearla
+  categoryChoice: string;
+}
+
 export default function MenuPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCatId, setSelectedCatId] = useState<number | null>(null);
@@ -39,14 +51,21 @@ export default function MenuPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [showAddDish, setShowAddDish] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  // Edición: id del platillo en edición (null = creando uno nuevo)
+  const [editingDishId, setEditingDishId] = useState<number | null>(null);
+  const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
+  const [deletingDishId, setDeletingDishId] = useState<number | null>(null);
+  // Platillo pendiente de confirmación de borrado (null = modal cerrado)
+  const [dishToDelete, setDishToDelete] = useState<Dish | null>(null);
 
   // VLM AI Scanner states
   const [showAIScanner, setShowAIScanner] = useState(false);
   const [scanningImage, setScanningImage] = useState(false);
-  const [extractedDishes, setExtractedDishes] = useState<any[]>([]);
+  const [extractedDishes, setExtractedDishes] = useState<ExtractedRow[]>([]);
   const [scanFile, setScanFile] = useState<File | null>(null);
   const [scanPreview, setScanPreview] = useState<string | null>(null);
   const [scanError, setScanError] = useState<string | null>(null);
+  const [bulkInserting, setBulkInserting] = useState(false);
 
   useEffect(() => {
     fetchCategories();
@@ -110,42 +129,93 @@ export default function MenuPage() {
     }
   };
 
-  const handleAddDish = async (e: React.FormEvent) => {
+  const resetDishForm = () => {
+    setDishName('');
+    setDishDesc('');
+    setDishPrice('');
+    setDishActive(true);
+    setSelectedFile(null);
+    setImagePreview(null);
+    setExistingImageUrl(null);
+    setEditingDishId(null);
+    setShowAddDish(false);
+  };
+
+  const openNewDish = () => {
+    resetDishForm();
+    setShowAddDish(true);
+  };
+
+  const openEditDish = (dish: Dish) => {
+    setEditingDishId(dish.id);
+    setDishName(dish.name);
+    setDishDesc(dish.description || '');
+    setDishPrice(String(parseFloat(dish.price)));
+    setDishActive(dish.active);
+    setSelectedFile(null);
+    setExistingImageUrl(dish.image_url || null);
+    setImagePreview(dish.image_url || null);
+    setShowAddDish(true);
+  };
+
+  const handleSaveDish = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!dishName.trim() || !dishPrice.trim() || selectedCatId === null) return;
 
     setUploadingImage(true);
-    let imageUrl = '';
-
     try {
+      // Subir nueva imagen solo si el usuario eligió un archivo; si no, conservar la actual
+      let imageUrl = existingImageUrl || '';
       if (selectedFile) {
-        imageUrl = (await uploadDishImage(selectedFile)) || '';
+        imageUrl = (await uploadDishImage(selectedFile)) || imageUrl;
       }
 
-      const res = await api.post<Dish>('/dishes', {
-        category_id: selectedCatId,
+      const payload = {
         name: dishName,
         description: dishDesc,
         price: parseFloat(dishPrice),
         active: dishActive,
-        image_url: imageUrl || undefined
-      });
+        image_url: imageUrl || undefined,
+      };
 
-      if (res.success && res.data) {
-        setDishes([...dishes, res.data]);
-        // Reset states
-        setDishName('');
-        setDishDesc('');
-        setDishPrice('');
-        setDishActive(true);
-        setSelectedFile(null);
-        setImagePreview(null);
-        setShowAddDish(false);
+      if (editingDishId !== null) {
+        // Editar
+        const res = await api.patch<Dish>(`/dishes/${editingDishId}`, payload);
+        if (res.success && res.data) {
+          setDishes(dishes.map(d => (d.id === editingDishId ? res.data! : d)));
+          resetDishForm();
+        }
+      } else {
+        // Crear
+        const res = await api.post<Dish>('/dishes', { ...payload, category_id: selectedCatId });
+        if (res.success && res.data) {
+          setDishes([...dishes, res.data]);
+          resetDishForm();
+        }
       }
     } catch (err) {
       console.error(err);
     } finally {
       setUploadingImage(false);
+    }
+  };
+
+  const confirmDeleteDish = async () => {
+    if (!dishToDelete) return;
+    const dish = dishToDelete;
+    setDeletingDishId(dish.id);
+    try {
+      const res = await api.delete(`/dishes/${dish.id}`);
+      if (res.success) {
+        setDishes(dishes.filter(d => d.id !== dish.id));
+        setDishToDelete(null);
+      } else {
+        alert(res.error || 'No se pudo eliminar el platillo');
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setDeletingDishId(null);
     }
   };
 
@@ -187,6 +257,29 @@ export default function MenuPage() {
     setScanError(null);
   };
 
+  // Vuelve a la vista de carga para escanear otra imagen sin cerrar el diálogo
+  const resetScan = () => {
+    setExtractedDishes([]);
+    setScanFile(null);
+    setScanPreview(null);
+    setScanError(null);
+  };
+
+  // Decide la categoría por defecto de un platillo detectado:
+  // 1) categoría existente cuyo nombre coincida con la sugerida por la IA,
+  // 2) si no existe, se marca para crearla (new:<Nombre>),
+  // 3) si la IA no sugirió nada, la categoría actualmente seleccionada.
+  const defaultCategoryChoice = (suggested: string): string => {
+    const sc = (suggested || '').trim();
+    if (sc) {
+      const match = categories.find(c => c.name.trim().toLowerCase() === sc.toLowerCase());
+      if (match) return String(match.id);
+      return `new:${sc}`;
+    }
+    if (selectedCatId) return String(selectedCatId);
+    return categories[0] ? String(categories[0].id) : '';
+  };
+
   const handleAIScan = async () => {
     if (!scanFile) {
       setScanError('Primero selecciona una foto del menú.');
@@ -199,8 +292,16 @@ export default function MenuPage() {
       const res = await api.post('/dishes/extract-from-image', { image: dataUrl });
       if (res.success && res.data) {
         const detected = res.data.extracted_dishes || [];
-        setExtractedDishes(detected);
-        if (detected.length === 0) {
+        const rows: ExtractedRow[] = detected.map((d: any) => ({
+          name: String(d.name ?? ''),
+          description: String(d.description ?? ''),
+          price: d.price ? String(d.price) : '',
+          suggested_category: String(d.suggested_category ?? ''),
+          selected: true,
+          categoryChoice: defaultCategoryChoice(String(d.suggested_category ?? '')),
+        }));
+        setExtractedDishes(rows);
+        if (rows.length === 0) {
           setScanError(res.data.message || 'La IA no detectó platillos en la imagen.');
         }
       } else {
@@ -211,6 +312,99 @@ export default function MenuPage() {
       setScanError('Error de conexión con el servidor.');
     } finally {
       setScanningImage(false);
+    }
+  };
+
+  // ---- Edición de filas del escáner ----
+  const updateRow = (index: number, patch: Partial<ExtractedRow>) => {
+    setExtractedDishes(rows => rows.map((r, i) => (i === index ? { ...r, ...patch } : r)));
+  };
+
+  const selectedCount = extractedDishes.filter(r => r.selected).length;
+  const allSelected = extractedDishes.length > 0 && selectedCount === extractedDishes.length;
+
+  const toggleSelectAll = () => {
+    const next = !allSelected;
+    setExtractedDishes(rows => rows.map(r => ({ ...r, selected: next })));
+  };
+
+  // Categorías "nuevas" referenciadas por las filas (sugeridas que aún no existen)
+  const newCategoryOptions = Array.from(
+    new Set(
+      extractedDishes
+        .map(r => r.suggested_category.trim())
+        .filter(sc => sc && !categories.some(c => c.name.trim().toLowerCase() === sc.toLowerCase()))
+    )
+  );
+
+  const handleBulkAdd = async () => {
+    const selected = extractedDishes.filter(r => r.selected);
+    if (selected.length === 0) {
+      setScanError('Selecciona al menos un platillo para agregar.');
+      return;
+    }
+
+    // Validación: nombre y precio válido (> 0) en cada platillo seleccionado
+    const invalid = selected.filter(r => !r.name.trim() || !(parseFloat(r.price) > 0));
+    if (invalid.length > 0) {
+      setScanError(`Revisa nombre y precio (> 0) de: ${invalid.map(r => r.name || 'platillo sin nombre').join(', ')}`);
+      return;
+    }
+
+    setBulkInserting(true);
+    setScanError(null);
+    try {
+      // 1) Crear las categorías nuevas necesarias (una sola vez cada una)
+      const neededNew = Array.from(
+        new Set(selected.filter(r => r.categoryChoice.startsWith('new:')).map(r => r.categoryChoice))
+      );
+      const createdMap: Record<string, number> = {};
+      let order = categories.length;
+      for (const token of neededNew) {
+        const name = token.slice(4);
+        const catRes = await api.post<Category>('/categories', { name, sort_order: ++order });
+        if (catRes.success && catRes.data) {
+          createdMap[token] = catRes.data.id;
+        } else {
+          throw new Error(`No se pudo crear la categoría "${name}"`);
+        }
+      }
+
+      // 2) Insertar todos los platillos seleccionados
+      const results = await Promise.all(
+        selected.map(r => {
+          const category_id = r.categoryChoice.startsWith('new:')
+            ? createdMap[r.categoryChoice]
+            : parseInt(r.categoryChoice);
+          return api.post<Dish>('/dishes', {
+            category_id,
+            name: r.name.trim(),
+            description: r.description.trim(),
+            price: parseFloat(r.price),
+            active: true,
+          });
+        })
+      );
+
+      const okCount = results.filter(r => r.success).length;
+      const failCount = results.length - okCount;
+
+      // 3) Refrescar categorías y la lista de la categoría visible
+      await fetchCategories();
+      if (selectedCatId) await fetchDishes(selectedCatId);
+
+      if (failCount > 0) {
+        setScanError(`${okCount} agregados, ${failCount} fallaron. Revisa e intenta de nuevo.`);
+        // Conservar solo los que fallaron para reintentar
+        setExtractedDishes(selected.filter((_, i) => !results[i].success));
+      } else {
+        closeAIScanner();
+      }
+    } catch (err) {
+      console.error(err);
+      setScanError(err instanceof Error ? err.message : 'Error al insertar los platillos.');
+    } finally {
+      setBulkInserting(false);
     }
   };
 
@@ -239,7 +433,7 @@ export default function MenuPage() {
           <Button variant="secondary" icon="psychology" onClick={() => setShowAIScanner(true)}>
             Escanear Menú con IA
           </Button>
-          <Button icon="add" onClick={() => setShowAddDish(true)}>
+          <Button icon="add" onClick={openNewDish}>
             Nuevo Platillo
           </Button>
         </div>
@@ -320,20 +514,22 @@ export default function MenuPage() {
               dishes.map((dish) => (
                 <Card key={dish.id} hoverable={false} className="p-0 border border-surface-container flex flex-col h-full relative overflow-hidden">
                   {/* Dish image or placeholder */}
-                  <div className="w-full h-44 bg-surface-container relative">
-                    {dish.image_url ? (
-                      <img src={dish.image_url} alt={dish.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center text-secondary">
-                        <span className="material-symbols-outlined text-4xl">image</span>
-                        <span className="text-xs mt-1">Sin imagen</span>
+                  <div className="p-3 pb-0">
+                    <div className="w-full h-44 bg-surface-container relative rounded-xl overflow-hidden">
+                      {dish.image_url ? (
+                        <img src={dish.image_url} alt={dish.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center text-secondary">
+                          <span className="material-symbols-outlined text-4xl">image</span>
+                          <span className="text-xs mt-1">Sin imagen</span>
+                        </div>
+                      )}
+                      {/* Active pill indicator */}
+                      <div className="absolute top-3 right-3">
+                        <Chip variant={dish.active ? 'success' : 'default'}>
+                          {dish.active ? 'Activo' : 'Pausado'}
+                        </Chip>
                       </div>
-                    )}
-                    {/* Active pill indicator */}
-                    <div className="absolute top-3 right-3">
-                      <Chip variant={dish.active ? 'success' : 'default'}>
-                        {dish.active ? 'Activo' : 'Pausado'}
-                      </Chip>
                     </div>
                   </div>
 
@@ -363,11 +559,22 @@ export default function MenuPage() {
                       </label>
 
                       <div className="flex items-center gap-1">
-                        <button className="w-8 h-8 rounded-full flex items-center justify-center text-secondary hover:bg-surface-container-low transition-colors">
+                        <button
+                          onClick={() => openEditDish(dish)}
+                          title="Editar platillo"
+                          className="w-8 h-8 rounded-full flex items-center justify-center text-secondary hover:bg-surface-container-low transition-colors"
+                        >
                           <span className="material-symbols-outlined text-lg">edit</span>
                         </button>
-                        <button className="w-8 h-8 rounded-full flex items-center justify-center text-error hover:bg-error-container/20 transition-colors">
-                          <span className="material-symbols-outlined text-lg">delete</span>
+                        <button
+                          onClick={() => setDishToDelete(dish)}
+                          disabled={deletingDishId === dish.id}
+                          title="Eliminar platillo"
+                          className="w-8 h-8 rounded-full flex items-center justify-center text-error hover:bg-error-container/20 transition-colors disabled:opacity-50"
+                        >
+                          <span className={`material-symbols-outlined text-lg ${deletingDishId === dish.id ? 'animate-spin' : ''}`}>
+                            {deletingDishId === dish.id ? 'progress_activity' : 'delete'}
+                          </span>
                         </button>
                       </div>
                     </div>
@@ -379,21 +586,69 @@ export default function MenuPage() {
         </div>
       </div>
 
+      {/* Delete confirmation modal */}
+      {dishToDelete && (
+        <div
+          className="fixed inset-0 z-[60] bg-black/40 flex items-center justify-center p-6 animate-fade-in"
+          onClick={() => deletingDishId === null && setDishToDelete(null)}
+        >
+          <div
+            className="w-full max-w-sm bg-surface-container-lowest shadow-lifted rounded-2xl p-7 flex flex-col gap-5 animate-scale-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="w-14 h-14 rounded-2xl bg-error-container/20 text-error flex items-center justify-center self-center">
+              <span className="material-symbols-outlined text-3xl">delete</span>
+            </div>
+
+            <div className="text-center flex flex-col gap-1.5">
+              <h3 className="text-lg font-extrabold tracking-tight font-heading text-on-surface">
+                Eliminar platillo
+              </h3>
+              <p className="text-secondary text-sm leading-relaxed">
+                ¿Seguro que quieres eliminar <span className="font-bold text-on-surface">«{dishToDelete.name}»</span>? Esta acción no se puede deshacer.
+              </p>
+            </div>
+
+            <div className="flex gap-3 mt-1">
+              <Button
+                variant="secondary"
+                fullWidth
+                onClick={() => setDishToDelete(null)}
+                disabled={deletingDishId !== null}
+              >
+                Cancelar
+              </Button>
+              <Button
+                variant="danger"
+                fullWidth
+                icon="delete"
+                loading={deletingDishId !== null}
+                onClick={confirmDeleteDish}
+              >
+                Eliminar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Add Dish Modal Drawer */}
       {showAddDish && (
         <div className="fixed inset-0 z-50 bg-black/40 flex justify-end animate-fade-in">
           <div className="w-full max-w-lg bg-surface-container-lowest h-full shadow-lifted p-8 flex flex-col gap-6 overflow-y-auto animate-scale-in">
             <div className="flex justify-between items-center">
-              <h3 className="text-xl font-extrabold tracking-tight font-heading">Agregar Nuevo Platillo</h3>
+              <h3 className="text-xl font-extrabold tracking-tight font-heading">
+                {editingDishId !== null ? 'Editar Platillo' : 'Agregar Nuevo Platillo'}
+              </h3>
               <button
-                onClick={() => setShowAddDish(false)}
+                onClick={resetDishForm}
                 className="w-10 h-10 rounded-full flex items-center justify-center text-secondary hover:bg-surface-container-low"
               >
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
 
-            <form onSubmit={handleAddDish} className="flex flex-col gap-5 flex-1">
+            <form onSubmit={handleSaveDish} className="flex flex-col gap-5 flex-1">
               <Input
                 label="Nombre del platillo"
                 placeholder="Ej: Hamburguesa con queso"
@@ -451,7 +706,7 @@ export default function MenuPage() {
                     >
                       Seleccionar Archivo
                     </label>
-                    <span className="text-secondary text-[10px] font-medium">Recomendado: 800x600 PNG o JPG</span>
+                    <span className="text-secondary text-[10px] font-medium">Cualquier foto: se optimiza y convierte a WebP automáticamente</span>
                   </div>
                 </div>
               </div>
@@ -472,7 +727,7 @@ export default function MenuPage() {
                 fullWidth
                 className="mt-auto shadow-orange font-bold text-base py-4"
               >
-                Crear Platillo
+                {editingDishId !== null ? 'Guardar Cambios' : 'Crear Platillo'}
               </Button>
             </form>
           </div>
@@ -540,28 +795,102 @@ export default function MenuPage() {
                 </Button>
               </label>
             ) : (
-              <div className="flex flex-col gap-4 overflow-y-auto pr-2 no-scrollbar max-h-[400px]">
-                <h4 className="font-extrabold font-heading text-sm text-secondary uppercase tracking-wider">Platillos Detectados ({extractedDishes.length})</h4>
-                <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-4 min-h-0 flex-1">
+                <div className="flex justify-between items-center">
+                  <h4 className="font-extrabold font-heading text-sm text-secondary uppercase tracking-wider">
+                    Platillos Detectados ({extractedDishes.length})
+                  </h4>
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={allSelected}
+                      onChange={toggleSelectAll}
+                      className="w-4 h-4 rounded accent-primary cursor-pointer"
+                    />
+                    <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
+                      Seleccionar todos
+                    </span>
+                  </label>
+                </div>
+
+                <p className="text-secondary text-xs -mt-2">
+                  Marca los que quieras conservar, corrige nombre/precio y confirma la categoría destino.
+                </p>
+
+                <div className="flex flex-col gap-3 overflow-y-auto pr-2 no-scrollbar flex-1">
                   {extractedDishes.map((dish, i) => (
-                    <Card key={i} hoverable={false} className="p-4 border border-surface-container flex justify-between items-center">
-                      <div>
-                        <h5 className="font-extrabold font-heading text-sm text-on-surface">{dish.name}</h5>
-                        <p className="text-secondary text-xs mt-0.5">{dish.description}</p>
-                        <Chip variant="primary" className="mt-2 text-[9px]">{dish.suggested_category}</Chip>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="font-black text-primary text-sm">${dish.price || '0.00'}</span>
-                        <Button size="sm" icon="add" onClick={() => {
-                          setDishName(dish.name);
-                          setDishDesc(dish.description);
-                          setDishPrice(String(dish.price || ''));
-                          setShowAddDish(true);
-                          closeAIScanner();
-                        }}>Agregar</Button>
+                    <Card
+                      key={i}
+                      hoverable={false}
+                      className={`p-4 border flex flex-col gap-3 transition-all ${dish.selected ? 'border-primary-container' : 'border-surface-container opacity-60'}`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <input
+                          type="checkbox"
+                          checked={dish.selected}
+                          onChange={(e) => updateRow(i, { selected: e.target.checked })}
+                          className="w-5 h-5 mt-1 rounded accent-primary cursor-pointer shrink-0"
+                        />
+                        <div className="flex flex-col gap-2 flex-1">
+                          <div className="flex gap-2">
+                            <input
+                              value={dish.name}
+                              onChange={(e) => updateRow(i, { name: e.target.value })}
+                              placeholder="Nombre del platillo"
+                              className="flex-1 bg-surface-container-low text-on-surface font-bold text-sm rounded-lg border-2 border-transparent outline-none focus:border-primary px-3 py-2"
+                            />
+                            <div className="relative w-28 shrink-0">
+                              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-sm font-bold">$</span>
+                              <input
+                                value={dish.price}
+                                onChange={(e) => updateRow(i, { price: e.target.value })}
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                placeholder="0.00"
+                                className="w-full bg-surface-container-low text-on-surface font-bold text-sm rounded-lg border-2 border-transparent outline-none focus:border-primary pl-7 pr-2 py-2"
+                              />
+                            </div>
+                          </div>
+                          <input
+                            value={dish.description}
+                            onChange={(e) => updateRow(i, { description: e.target.value })}
+                            placeholder="Descripción (opcional)"
+                            className="w-full bg-surface-container-low text-on-surface-variant text-xs rounded-lg border-2 border-transparent outline-none focus:border-primary px-3 py-2"
+                          />
+                          <div className="flex items-center gap-2">
+                            <span className="material-symbols-outlined text-secondary text-base">category</span>
+                            <select
+                              value={dish.categoryChoice}
+                              onChange={(e) => updateRow(i, { categoryChoice: e.target.value })}
+                              className="flex-1 bg-surface-container-low text-on-surface text-xs font-semibold rounded-lg border-2 border-transparent outline-none focus:border-primary px-3 py-2 cursor-pointer"
+                            >
+                              {categories.map(c => (
+                                <option key={c.id} value={String(c.id)}>{c.name}</option>
+                              ))}
+                              {newCategoryOptions.map(name => (
+                                <option key={`new:${name}`} value={`new:${name}`}>➕ Crear «{name}»</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
                       </div>
                     </Card>
                   ))}
+                </div>
+
+                <div className="flex items-center justify-between gap-3 pt-3 border-t border-surface-container">
+                  <Button variant="ghost" size="sm" icon="refresh" onClick={resetScan} disabled={bulkInserting}>
+                    Escanear otra imagen
+                  </Button>
+                  <Button
+                    icon="playlist_add"
+                    loading={bulkInserting}
+                    disabled={selectedCount === 0}
+                    onClick={handleBulkAdd}
+                  >
+                    Agregar {selectedCount} platillo{selectedCount === 1 ? '' : 's'}
+                  </Button>
                 </div>
               </div>
             )}

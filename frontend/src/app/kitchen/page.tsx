@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { getSocket } from '@/lib/socket';
+import { connectToRestaurant } from '@/lib/socket';
 import { api } from '@/lib/api';
+import { playAlertBeep, unlockAudio, isAudioUnlocked } from '@/lib/sound';
 import { Card, Chip, Button } from '@/components/ui';
 
 interface OrderItem {
@@ -23,17 +24,28 @@ export default function KitchenPage() {
   const [orders, setOrders] = useState<KitchenOrder[]>([]);
   const [restaurantId, setRestaurantId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [soundOn, setSoundOn] = useState(false);
 
-  // Sound notification
-  const playAlertSound = () => {
-    try {
-      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-84.wav');
-      audio.volume = 0.5;
-      audio.play();
-    } catch (err) {
-      console.log('Audio alert failed to play (browser restriction)', err);
-    }
+  const enableSound = () => {
+    unlockAudio();
+    setSoundOn(isAudioUnlocked());
   };
+
+  // Browsers block audio until the user interacts with the page. Unlock on the
+  // first interaction anywhere so the kitchen attendant doesn't have to click a button.
+  useEffect(() => {
+    const handler = () => {
+      enableSound();
+      window.removeEventListener('pointerdown', handler);
+      window.removeEventListener('keydown', handler);
+    };
+    window.addEventListener('pointerdown', handler);
+    window.addEventListener('keydown', handler);
+    return () => {
+      window.removeEventListener('pointerdown', handler);
+      window.removeEventListener('keydown', handler);
+    };
+  }, []);
 
   useEffect(() => {
     // Read user token to extract restaurantId
@@ -76,9 +88,9 @@ export default function KitchenPage() {
 
     if (!restaurantId) return;
 
-    // Connect to Socket
-    const socket = getSocket();
-    socket.emit('join:restaurant', restaurantId);
+    // Connect to Socket (autoConnect is disabled, so this opens the connection
+    // AND joins the restaurant room — getSocket() alone never connects)
+    const socket = connectToRestaurant(restaurantId);
 
     // Listen for new orders
     socket.on('order:new', (newOrder: any) => {
@@ -89,7 +101,7 @@ export default function KitchenPage() {
         created_at: newOrder.created_at,
         status: 'paid'
       }]);
-      playAlertSound();
+      playAlertBeep();
     });
 
     return () => {
@@ -134,9 +146,20 @@ export default function KitchenPage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 bg-zinc-900 border border-zinc-800 px-4 py-2.5 rounded-xl">
-          <span className="w-2.5 h-2.5 bg-success rounded-full animate-pulse-dot" />
-          <span className="text-xs font-bold text-zinc-400">Canal Activo en tiempo real</span>
+        <div className="flex items-center gap-3">
+          {!soundOn && (
+            <button
+              onClick={enableSound}
+              className="flex items-center gap-2 bg-primary-container text-on-primary px-4 py-2.5 rounded-xl text-xs font-bold active:scale-95"
+            >
+              <span className="material-symbols-outlined text-base">notifications_active</span>
+              Activar sonido
+            </button>
+          )}
+          <div className="flex items-center gap-3 bg-zinc-900 border border-zinc-800 px-4 py-2.5 rounded-xl">
+            <span className="w-2.5 h-2.5 bg-success rounded-full animate-pulse-dot" />
+            <span className="text-xs font-bold text-zinc-400">Canal Activo en tiempo real</span>
+          </div>
         </div>
       </header>
 

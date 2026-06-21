@@ -16,6 +16,7 @@ const createDishSchema = z.object({
   description: z.string().optional().default(''),
   price: z.number().positive(),
   active: z.boolean().default(true),
+  image_url: z.string().url().optional(),
 });
 
 const updateDishSchema = z.object({
@@ -24,6 +25,7 @@ const updateDishSchema = z.object({
   price: z.number().positive().optional(),
   active: z.boolean().optional(),
   category_id: z.number().int().positive().optional(),
+  image_url: z.string().url().optional(),
 });
 
 // ---- GET /dishes (admin) ----
@@ -72,7 +74,7 @@ router.get('/', authenticate, requireRole('admin'), async (req: Request, res: Re
 // ---- POST /dishes ----
 router.post('/', authenticate, requireRole('admin'), validate(createDishSchema), async (req: Request, res: Response) => {
   try {
-    const { category_id, name, description, price, active } = req.body;
+    const { category_id, name, description, price, active, image_url } = req.body;
 
     // Verify category belongs to this restaurant
     const catCheck = await query(
@@ -85,8 +87,8 @@ router.post('/', authenticate, requireRole('admin'), validate(createDishSchema),
     }
 
     const result = await query(
-      'INSERT INTO dishes (category_id, name, description, price, active) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [category_id, name, description, price, active]
+      'INSERT INTO dishes (category_id, name, description, price, active, image_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [category_id, name, description, price, active, image_url ?? null]
     );
 
     res.status(201).json({ success: true, data: result.rows[0], error: null });
@@ -114,6 +116,7 @@ router.patch('/:id', authenticate, requireRole('admin'), async (req: Request, re
     if (data.price !== undefined) { fields.push(`price = $${paramIndex++}`); values.push(data.price); }
     if (data.active !== undefined) { fields.push(`active = $${paramIndex++}`); values.push(data.active); }
     if (data.category_id !== undefined) { fields.push(`category_id = $${paramIndex++}`); values.push(data.category_id); }
+    if (data.image_url !== undefined) { fields.push(`image_url = $${paramIndex++}`); values.push(data.image_url); }
 
     if (fields.length === 0) {
       res.status(400).json({ success: false, data: null, error: 'No hay campos para actualizar' });

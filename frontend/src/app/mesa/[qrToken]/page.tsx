@@ -175,7 +175,7 @@ export default function ClientMenuPage() {
             return (
               <Card key={dish.id} hoverable={true} className="p-0 border border-surface-container flex h-32 relative overflow-hidden select-none" onClick={() => handleAddToCart(dish)}>
                 {/* Dish image or placeholder */}
-                <div className="w-32 h-full bg-surface-container flex-shrink-0 relative">
+                <div className="w-36 h-28 m-2 self-center bg-surface-container flex-shrink-0 relative rounded-xl overflow-hidden">
                   {dish.image_url ? (
                     <img src={dish.image_url} alt={dish.name} className="w-full h-full object-cover" />
                   ) : (
